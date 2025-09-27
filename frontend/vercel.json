@@ -1,0 +1,9 @@
+{
+  "rewrites": [
+    { "source": "/records", "destination": "https://YOUR-BACKEND-URL/records" },
+    { "source": "/insurance", "destination": "https://YOUR-BACKEND-URL/insurance" },
+    { "source": "/appointments", "destination": "https://YOUR-BACKEND-URL/appointments" },
+    { "source": "/chat", "destination": "https://YOUR-BACKEND-URL/chat" }
+  ]
+}
+

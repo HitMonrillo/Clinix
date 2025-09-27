@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect, useContext } from 'react';
 import { ScreenContext } from '../Layouts/RootLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { sendChat } from '../services/api';
 
 export const ChatBot = () => {
   const { isMobile } = useContext(ScreenContext);
@@ -23,7 +24,7 @@ export const ChatBot = () => {
     }
   }, [input]);
 
-  const handleSend = () => {
+  const handleSend = async () => {
     if (!input.trim()) return;
     setMessages(prev => [
       ...prev,
@@ -31,12 +32,19 @@ export const ChatBot = () => {
     ]);
     setInput('');
 
-    setTimeout(() => {
+    try {
+      const res = await sendChat(input.trim());
+      const reply = (res && res.message) || 'Thanks for your message.';
       setMessages(prev => [
         ...prev,
-        { id: prev.length + 1, from: 'ai', text: 'Got it! Thanks for sharing.' },
+        { id: prev.length + 1, from: 'ai', text: reply },
       ]);
-    }, 700);
+    } catch (err) {
+      setMessages(prev => [
+        ...prev,
+        { id: prev.length + 1, from: 'ai', text: 'Sorry, I could not process that.' },
+      ]);
+    }
   };
 
   const handleKeyPress = e => {

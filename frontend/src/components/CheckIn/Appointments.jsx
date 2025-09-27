@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { submitAppointment } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 export const Appointments = () => {
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState(null);
   const [time, setTime] = useState('');
   const [formData, setFormData] = useState({
@@ -16,9 +19,25 @@ export const Appointments = () => {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log('Appointment submitted:', { ...formData, date: startDate, time });
+    setSubmitting(true);
+    setResult(null);
+    setError(null);
+    try {
+      const payload = { patientName: formData.fullName, patientEmail: formData.email };
+      const res = await submitAppointment(payload);
+      setResult(res);
+      setTimeout(() => navigate('/checkin/insurance'), 600);
+    } catch (err) {
+      setError(err.message || 'Appointment scheduling failed');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -96,10 +115,18 @@ export const Appointments = () => {
 
         <button
           type="submit"
-          className="w-full py-2 px-4 rounded-full bg-black hover:bg-gray-900 cursor-pointer text-white font-inter font-medium transition-all duration-50"
+          disabled={submitting}
+          className="w-full py-2 px-4 rounded-full bg-black hover:bg-gray-900 disabled:opacity-60 cursor-pointer text-white font-inter font-medium transition-all duration-50"
         >
-          Submit
+          {submitting ? 'Scheduling...' : 'Submit'}
         </button>
+
+        {error && (
+          <div className="text-red-600 text-sm">{error}</div>
+        )}
+        {result && (
+          <pre className="text-xs bg-white/50 p-3 rounded-lg border border-gray-200 overflow-x-auto">{JSON.stringify(result, null, 2)}</pre>
+        )}
       </form>
     </div>
   );

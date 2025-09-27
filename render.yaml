@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: clinix-backend
+    env: docker
+    plan: free
+    autoDeploy: true
+    dockerfilePath: backend/Dockerfile
+    envVars:
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: GOOGLE_SERVICE_ACCOUNT_JSON_BASE64
+        sync: false
+      - key: GOOGLE_SERVICE_ACCOUNT_JSON
+        sync: false
+      - key: GOOGLE_APPLICATION_CREDENTIALS
+        sync: false
+      - key: SKELETON_SPREADSHEET_NAME
+        value: MedicalRecordSkeletonSpreadsheet
+      - key: FULL_SPREADSHEET_NAME
+        value: MedicalRecordSpreadsheet
+      - key: APPOINTMENT_SKELETON_ICS
+        value: backend/resources/AppointmentSkeletonCalendar.ics
+      - key: DEFAULT_TIMEZONE
+        value: America/New_York
+      - key: LUNCH_START
+        value: "12:00"
+      - key: LUNCH_END
+        value: "13:00"
+      - key: CORS_ALLOW_ORIGINS
+        value: https://YOUR-PROJECT.vercel.app
+      - key: LOG_LEVEL
+        value: INFO
+

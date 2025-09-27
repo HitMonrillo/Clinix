@@ -1,0 +1,17 @@
+[
+  {
+    "Patient ID": "1001",
+    "Name": "Alice Johnson",
+    "Fields": "Labs, Prescriptions, Allergies, Notes"
+  },
+  {
+    "Patient ID": "1002",
+    "Name": "Bob Smith",
+    "Fields": "Vaccinations, Imaging, Notes"
+  },
+  {
+    "Patient ID": "1003",
+    "Name": "Carol Lee",
+    "Fields": "Labs, Allergies, Notes"
+  }
+]
