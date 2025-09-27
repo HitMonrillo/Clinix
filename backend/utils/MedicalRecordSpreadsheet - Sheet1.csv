@@ -1,0 +1,29 @@
+ID,Fields,Name,Date of Last Visit,Accessibility,Info
+1,Lab,Lina Rodgers,,None,"Test: Complete Blood Count (CBC)
+Result: WBC 6.2 ×10³/µL, RBC 4.8 ×10⁶/µL, Hemoglobin 13.5 g/dL, Hematocrit 40%"
+2,Vaccine,Michale Clements,,None,"Exam: Pre-employment Physical
+Vitals: BP 125/80, HR 76, Temp 98.4°F
+Findings: Mildly high cholesterol, otherwise normal."
+3,Vaccine,Catalina Braun,,None,"Test: Basic Metabolic Panel (BMP)
+Result: Sodium 140 mmol/L, Potassium 4.1 mmol/L, Chloride 102 mmol/L, BUN 14 mg/dL, Creatinine 0.9 mg/dL"
+4,Lab,Domingo Franklin,,None,"Vaccine: Tetanus, Diphtheria, Pertussis (Tdap)
+Date Administered: 2023-07-18
+Dose: 0.5 mL intramuscular
+Notes: Routine adult booster"
+5,Prescription,Sam Hawkins,,Wheelchair,"Exam: Annual Physical
+Vitals: BP 118/76, HR 72, Temp 98.6°F
+Findings: Normal exam, BMI normal."
+6,"Lab, Prescription",Tommie Landry,,Odor,"Test: Lipid Panel
+Result: Total Cholesterol 190 mg/dL, HDL 55 mg/dL, LDL 110 mg/dL, Triglycerides 120 mg/dL"
+7,Lab,Marlon Sims,,Wheelchair,"Test: Urinalysis
+Result: Color: Yellow, Specific Gravity: 1.020, pH: 6.0, Protein: Negative, Glucose: Negative, WBC: 0–2/HPF"
+8,Vaccine,Andrea Bond,,None,"Vaccine: Influenza (Flu Shot)
+Date Administered: 2024-10-05
+Dose: 0.5 mL intramuscular
+Notes: Annual flu vaccination"
+9,"Lab, Vaccine",Deborah Dennis,,Sound,"Test: Liver Function Test (LFT)
+Result: ALT 32 U/L, AST 28 U/L, ALP 95 U/L, Total Bilirubin 0.9 mg/dL, Albumin 4.2 g/dL"
+10,"Lab, Vaccine, Priscription",Georgia Mcdaniel,,None,"Vaccine: COVID-19 Booster (Pfizer-BioNTech)
+Date Administered: 2025-03-12
+Dose: 30 µg intramuscular
+Notes: Booster, third dose"
