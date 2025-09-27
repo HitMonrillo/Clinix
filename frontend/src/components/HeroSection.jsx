@@ -54,7 +54,7 @@ const HeroSection = () => {
   return (
     <>
     
-      <div className="absolute w-full h-auto pointer-events-none -z-10">
+      <div className="absolute w-full h-auto pointer-events-none z-10">
         {blobs.map(blob => (
           <div
             key={blob.id}
