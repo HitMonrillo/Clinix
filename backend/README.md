@@ -11,7 +11,8 @@ Docker
 - Run: `docker run --rm -p 8000:8000 --env-file backend/.env clinix-backend`
 
 Environment variables
-- GEMINI_API_KEY: Optional. When missing, deterministic fallbacks are used for planners
+- GEMINI_API_KEY: Optional. When missing, deterministic fallbacks are used for planners and the knowledge agent
+- KNOWLEDGE_MODEL: Optional Gemini model name for the knowledge agent (default: gemini-pro)
 - SKELETON_SPREADSHEET_PATH: Optional path to skeleton CSV (default: backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv)
 - FULL_SPREADSHEET_PATH: Optional path to full CSV (default: backend/utils/MedicalRecordSpreadsheet - Sheet1.csv)
 - APPOINTMENT_SKELETON_ICS: Optional ICS path (default: backend/resources/AppointmentSkeletonCalendar.ics)

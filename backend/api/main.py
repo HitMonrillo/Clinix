@@ -16,6 +16,15 @@ import json
 from pathlib import Path
 
 from backend.utils.google import load_sheet_records
+from backend.utils.logging import get_logger
+from backend.utils.retry import retry
+try:
+    import google.generativeai as genai
+except Exception:
+    genai = None
+
+logger = get_logger(__name__)
+
 from backend.agents.appointment_planning_agent import AppointmentPlannerAgent
 from backend.agents.appointment_executer_agent import AppointmentExecutorAgent
 from backend.agents.medical_record_planner_agent import MedicalPlannerAgent
@@ -110,12 +119,40 @@ def create_appointment_agents(api_key: str):
     return planner, executor
 
 
-def create_knowledge_agent() -> KnowledgeAgent:
-    class DummyLLM:
-        def generate_response(self, query: str, instruction: str) -> str:
-            return "Thanks for your message. For medical issues, consult a professional."
+GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-pro")
 
-    return KnowledgeAgent(DummyLLM(), escalate_to_human)
+
+def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
+    class GeminiWrapper:
+        def __init__(self, api_key: str, model_name: str):
+            self.model = None
+            if api_key and genai is not None:
+                try:
+                    genai.configure(api_key=api_key, transport="rest")
+                    self.model = genai.GenerativeModel(model_name)
+                except Exception as exc:  # pragma: no cover - network failures
+                    logger.warning(f"Failed to initialize Gemini knowledge model: {exc}")
+                    self.model = None
+
+        def generate_response(self, query: str, instruction: str) -> str:
+            if not self.model:
+                return "I'm a demo assistant. Configure Gemini to answer knowledge queries."
+
+            prompt = (
+                f"Instruction: {instruction}\n"
+                "Provide concise, general medical guidance. Do not diagnose.\n"
+                f"Question: {query}"
+            )
+            try:
+                response = retry(lambda: self.model.generate_content(prompt))
+                text = getattr(response, "text", "")
+                return text.strip() or "I'm not sure how to answer that right now."
+            except Exception as exc:  # pragma: no cover - network failures
+                logger.error(f"Gemini knowledge call failed: {exc}")
+                return "I'm not sure how to answer that right now."
+
+    llm = GeminiWrapper(api_key, GENAI_MODEL)
+    return KnowledgeAgent(llm, escalate_to_human)
 
 
 # ---------- FastAPI App ----------
@@ -142,7 +179,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 app_planner, app_executor = create_appointment_agents(GEMINI_API_KEY)
 rec_planner, rec_executor = create_medical_agents(GEMINI_API_KEY)
 ins_planner, ins_executor = create_insurance_agents(GEMINI_API_KEY)
-knowledge = create_knowledge_agent()
+knowledge = create_knowledge_agent(GEMINI_API_KEY)
 
 orchestrator = HealthcareOrchestrator(
     appointment_agents=(app_planner, app_executor),

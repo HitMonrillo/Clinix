@@ -5,7 +5,7 @@ class KnowledgeAgent:
 
     def get_general_advice(self, query: str) -> str:
         """
-        Provide general medical guidance. Escalate if unsafe or uncertain.
+        Provide general medical guidance. Escalate if unsafe or uncertain. 
         """
         # Step 1: Ask LLM for advice
         response = self.llm_model.generate_response(

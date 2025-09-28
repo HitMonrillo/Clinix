@@ -34,7 +34,15 @@ export const ChatBot = () => {
 
     try {
       const res = await sendChat(input.trim());
-      const reply = (res && res.message) || 'Thanks for your message.';
+      // Prefer backend-provided content; avoid falling back to a generic message
+      const reply =
+        (typeof res === 'string' && res) ||
+        res?.message ||
+        res?.reply ||
+        res?.answer ||
+        res?.data?.message ||
+        res?.raw ||
+        'Sorry, I do not have an answer right now.';
       setMessages(prev => [
         ...prev,
         { id: prev.length + 1, from: 'ai', text: reply },
