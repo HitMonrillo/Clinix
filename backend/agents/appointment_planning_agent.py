@@ -33,7 +33,13 @@ class AppointmentPlannerAgent:
 
     def plan_slot(self, skeleton_calendar, time_length, user_timezone, lunch_time: list):
         # Open and read the ICS file
-        with open(skeleton_calendar, 'r', encoding='utf-8') as file:
+        BASE_DIR = os.path.dirname(__file__)
+
+        # PROJECT_DIR = backend
+        PROJECT_DIR = os.path.dirname(BASE_DIR)
+
+        ics_path = os.path.join(PROJECT_DIR, "resources", skeleton_calendar)
+        with open(ics_path, 'r', encoding='utf-8') as file:
             calendar_data = file.read()
 
         # Parse it into a Calendar object

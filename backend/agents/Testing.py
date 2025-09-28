@@ -6,7 +6,6 @@ from backend.agents.medical_record_planner_agent import MedicalPlannerAgent
 from backend.agents.insurance_planning_agent import InsurancePlannerAgent
 from backend.agents.appointment_planning_agent import AppointmentPlannerAgent
 
-
 def _parse_fields_column(rows):
     for r in rows:
         if isinstance(r.get("Fields"), str):
@@ -40,7 +39,8 @@ def create_agents():
 
 
 def load_calendar_defaults():
-    skeleton_schedule = os.getenv("APPOINTMENT_SKELETON_ICS", "backend/resources/AppointmentSkeletonCalendar.ics")
+    skeleton_schedule = os.getenv("APPOINTMENT_SKELETON_ICS", "AppointmentSkeletonCalendar.ics")
+    print(skeleton_schedule)
     time_length = float(os.getenv("APPOINTMENT_DEFAULT_LENGTH_HOURS", "1.5"))
     time_zone = os.getenv("DEFAULT_TIMEZONE", "America/New_York")
     lunch_start = os.getenv("LUNCH_START", "12:00")
