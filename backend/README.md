@@ -15,7 +15,8 @@ Environment variables
 - KNOWLEDGE_MODEL: Optional Gemini model name for the knowledge agent (default: gemini-1.5-flash). Other valid options: gemini-1.5-pro, gemini-1.5-flash-latest, gemini-pro.
 - SKELETON_SPREADSHEET_PATH: Optional path to skeleton CSV (default: backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv)
 - FULL_SPREADSHEET_PATH: Optional path to full CSV (default: backend/utils/MedicalRecordSpreadsheet - Sheet1.csv)
-- APPOINTMENT_SKELETON_ICS: Optional ICS path (default: backend/resources/AppointmentSkeletonCalendar.ics)
+- APPOINTMENT_SKELETON_ICS: Optional ICS path. You can set either a filename (recommended: `AppointmentSkeletonCalendar.ics`) or an absolute path. Default: `backend/resources/AppointmentSkeletonCalendar.ics`.
+  The scheduler now resolves paths robustly and avoids duplicating `backend/resources` segments.
 - DEFAULT_TIMEZONE, LUNCH_START, LUNCH_END: Optional scheduling settings
 - CORS_ALLOW_ORIGINS: Comma-separated list of allowed origins
 - LOG_LEVEL: Logging level (default INFO)
