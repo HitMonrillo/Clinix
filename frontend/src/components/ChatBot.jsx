@@ -73,7 +73,7 @@ export const ChatBot = () => {
               className={`px-4 py-2 rounded-2xl max-w-[70%] break-all whitespace-pre-wrap sm:leading-6 transition-all duration-150 cursor-pointer ${
                 msg.from === 'ai'
                   ? 'bg-gray-100 hover:bg-gray-300/80 text-black self-start shadow-md backdrop-blur-xl border border-black/25'
-                  : 'bg-gray-800/60 hover:bg-gray-700 text-white self-end shadow-md'
+                  : 'bg-sky-700/80 hover:bg-gray-700 text-white self-end shadow-md'
               }`}
             >
               {msg.text}
