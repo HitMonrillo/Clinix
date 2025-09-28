@@ -1,9 +1,16 @@
 import os
+from pathlib import Path
 from typing import List
+
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
 
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    dotenv_path = BASE_DIR / ".env"
+    if not dotenv_path.exists():
+        dotenv_path = PROJECT_ROOT / ".env"
+    load_dotenv(dotenv_path)
 except Exception:
     # dotenv is optional in production
     pass
@@ -13,7 +20,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 import json
-from pathlib import Path
 
 from backend.utils.google import load_sheet_records
 from backend.utils.logging import get_logger
@@ -107,8 +113,7 @@ def create_medical_agents(api_key: str):
 
 def create_insurance_agents(api_key: str):
     planner = InsurancePlannerAgent(api_key=api_key)
-    # dataset not available yet; initialize with empty list
-    executor = InsuranceExecutorAgent()#heloooo
+    executor = InsuranceExecutorAgent()
     return planner, executor
 
 
