@@ -2,8 +2,6 @@ import { useState } from 'react'
 import { Routes, Route, createBrowserRouter, createRoutesFromElements, RouterProvider } from 'react-router-dom'
 import './App.css'
 
-import SignInPage from './Pages/SignInPage'
-import LoginInPage from './Pages/LoginInPage'
 import { RootLayout } from './Layouts/RootLayout'
 import Homepage from './Pages/HomePage' 
 import CheckIn from './Pages/CheckIn'
@@ -21,8 +19,7 @@ function App() {
     createRoutesFromElements(
       <Route path='/' element={<RootLayout/>}>
           <Route index element={<Homepage/>}/>
-          <Route path='/Login' element={<LoginInPage/>}/>
-          <Route path='/SignIn' element={<SignInPage/>}/>
+          
           <Route path='/chat' element={<Chat/>}/>
           <Route path="/checkin" element={<CheckIn />}>
               <Route path="appointments" element={<Appointments/>} />
