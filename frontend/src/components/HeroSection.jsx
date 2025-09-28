@@ -88,7 +88,7 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
             to="/chat"
             className="flex items-center px-6 py-2 bg-transparent text-black rounded-full border-2 border-black hover:bg-zinc-300/50 transition-colors whitespace-nowrap"
           >
-            Learn More
+            Chat with Us
           </Link>
         </div>
         </div>
