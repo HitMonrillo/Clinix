@@ -1,11 +1,18 @@
-import google.generativeai as genai
+import os
 import json
+import re
+from typing import List, Tuple
+from backend.utils.logging import get_logger
+from backend.utils.retry import retry
+
+try:
+    import google.generativeai as genai
+except Exception:
+    genai = None
 
 from ics import Calendar
-from datetime import datetime
+from datetime import datetime, timedelta, time as dtime
 import pytz
-
-import re
 
 def clean_json(text: str) -> str:
     # Remove ```json ... ``` or ``` ... ``` blocks
@@ -14,13 +21,25 @@ def clean_json(text: str) -> str:
 
 class AppointmentPlannerAgent:
     def __init__(self, api_key: str, model_name="gemini-flash-latest"):
-        # configure Gemini
-        genai.configure(api_key=api_key, transport="rest")
-        self.model = genai.GenerativeModel(model_name)
+        self.model = None
+        self.logger = get_logger(__name__)
+        if api_key and genai is not None:
+            try:
+                genai.configure(api_key=api_key, transport="rest")
+                self.model = genai.GenerativeModel(model_name)
+            except Exception:
+                self.logger.warning("Failed to initialize Gemini; using fallback")
+                self.model = None
 
     def plan_slot(self, skeleton_calendar, time_length, user_timezone, lunch_time: list):
         # Open and read the ICS file
-        with open(skeleton_calendar, 'r', encoding='utf-8') as file:
+        BASE_DIR = os.path.dirname(__file__)
+
+        # PROJECT_DIR = backend
+        PROJECT_DIR = os.path.dirname(BASE_DIR)
+
+        ics_path = os.path.join(PROJECT_DIR, "resources", skeleton_calendar)
+        with open(ics_path, 'r', encoding='utf-8') as file:
             calendar_data = file.read()
 
         # Parse it into a Calendar object
@@ -35,7 +54,7 @@ class AppointmentPlannerAgent:
             calendar_text += f"Event: {event.name}, Start: {start}, End: {end}\n"
 
 
-        print(calendar_text)
+        # Debug text prepared; not printed to avoid noise during API calls
         # Send safe prompt to LLM
         prompt = f"""
         You are a scheduling assistant. Convert the following into a calendar event:
@@ -51,13 +70,82 @@ class AppointmentPlannerAgent:
         Respond with ONLY valid JSON. No explanation or text outside the JSON.
         """
 
-        response = self.model.generate_content(prompt)
+        if self.model is not None:
+            try:
+                response = retry(lambda: self.model.generate_content(prompt))
+                response_text = clean_json(response.text)
+                try:
+                    return json.loads(response_text)
+                except json.JSONDecodeError:
+                    self.logger.warning("Gemini returned non-JSON; using fallback")
+            except Exception as e:
+                self.logger.error(f"Gemini error: {e}; using fallback")
 
-        # Try to parse Gemini response safely
-        response_text = clean_json(response.text)
-        try:
-            plan = json.loads(response_text)
-        except json.JSONDecodeError:
-            plan = {"error": "Could not parse planner response", "raw": response.text}
+        # Fallback deterministic scheduler
+        tz = pytz.timezone(user_timezone)
+        events_local: List[Tuple[datetime, datetime]] = []
+        for event in events:
+            start = event.begin.datetime.astimezone(tz)
+            end = event.end.datetime.astimezone(tz)
+            events_local.append((start, end))
+        events_local.sort(key=lambda x: x[0])
 
-        return plan
+        # Choose day from first event or today
+        base_day = events_local[0][0].date() if events_local else datetime.now(tz).date()
+
+        duration = timedelta(hours=float(time_length))
+        pad = timedelta(minutes=15)
+        work_start = tz.localize(datetime.combine(base_day, dtime(hour=8)))
+        work_end = tz.localize(datetime.combine(base_day, dtime(hour=17)))
+
+        # Lunch window
+        ls = datetime.strptime(lunch_time[0], "%H:%M").time()
+        le = datetime.strptime(lunch_time[1], "%H:%M").time()
+        lunch_start = tz.localize(datetime.combine(base_day, ls))
+        lunch_end = tz.localize(datetime.combine(base_day, le))
+
+        # Build blocked intervals
+        blocked: List[Tuple[datetime, datetime]] = []
+        for s, e in events_local:
+            # clamp to work hours
+            s2 = max(work_start, s - pad)
+            e2 = min(work_end, e + pad)
+            if s2 < e2:
+                blocked.append((s2, e2))
+        blocked.append((lunch_start, lunch_end))
+        blocked.sort(key=lambda x: x[0])
+
+        # Merge overlaps
+        merged: List[Tuple[datetime, datetime]] = []
+        for s, e in blocked:
+            if not merged or s > merged[-1][1]:
+                merged.append((s, e))
+            else:
+                merged[-1] = (merged[-1][0], max(merged[-1][1], e))
+
+        # Find earliest gap
+        cursor = work_start
+        for s, e in merged:
+            if cursor + duration <= s:
+                start = cursor
+                end = start + duration
+                return {
+                    "date": start.strftime("%Y-%m-%d"),
+                    "start_time": start.strftime("%H:%M"),
+                    "end_time": end.strftime("%H:%M"),
+                }
+            cursor = max(cursor, e)
+
+        if cursor + duration <= work_end:
+            start = cursor
+            end = start + duration
+            return {
+                "date": start.strftime("%Y-%m-%d"),
+                "start_time": start.strftime("%H:%M"),
+                "end_time": end.strftime("%H:%M"),
+            }
+
+        # No slot available
+        result = {"error": "No available slot found"}
+        self.logger.info(f"Appointment fallback result: {result}")
+        return result

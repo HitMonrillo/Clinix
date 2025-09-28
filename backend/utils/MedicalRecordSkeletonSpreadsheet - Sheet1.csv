@@ -1,0 +1,11 @@
+ID,Fields
+1,Lab
+2,Vaccine
+3,Vaccine
+4,Lab
+5,Prescription
+6,"Lab, Prescription"
+7,Lab
+8,Vaccine
+9,"Lab, Vaccine"
+10,"Lab, Vaccine, Priscription"

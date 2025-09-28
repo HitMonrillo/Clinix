@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/records", "destination": "https://clinix-backend-4cfw.onrender.com/records" },
+    { "source": "/insurance", "destination": "https://clinix-backend-4cfw.onrender.com/insurance" },
+    { "source": "/appointments", "destination": "https://clinix-backend-4cfw.onrender.com/appointments" },
+    { "source": "/chat", "destination": "https://clinix-backend-4cfw.onrender.com/chat" }
+  ]
+}

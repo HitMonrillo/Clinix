@@ -1,0 +1,27 @@
+[
+  {
+    "Patient ID": "1001",
+    "Name": "Alice Johnson",
+    "Labs": {
+      "CBC": "Normal",
+      "BMP": "Slightly elevated glucose"
+    },
+    "Prescriptions": ["Lisinopril 10mg daily"],
+    "Allergies": ["Penicillin"],
+    "Notes": "Follow-up in 3 months"
+  },
+  {
+    "Patient ID": "1002",
+    "Name": "Bob Smith",
+    "Vaccinations": ["Influenza 2024", "Tdap 2023"],
+    "Imaging": {"Chest X-Ray": "Clear"},
+    "Notes": "Annual physical completed"
+  },
+  {
+    "Patient ID": "1003",
+    "Name": "Carol Lee",
+    "Labs": {"HbA1c": "6.2%"},
+    "Allergies": ["None"],
+    "Notes": "Lifestyle counseling provided"
+  }
+]

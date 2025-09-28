@@ -1,0 +1,22 @@
+# Railway deployment configuration (example)
+
+[service]
+name = "clinix-backend"
+
+[build]
+builder = "Dockerfile"
+dockerfilePath = "backend/Dockerfile"
+
+[deploy]
+startCommand = "uvicorn backend.api.main:app --host 0.0.0.0 --port $PORT"
+healthcheckPath = "/"
+
+[env]
+PORT = "8000"
+DEFAULT_TIMEZONE = "America/New_York"
+APPOINTMENT_SKELETON_ICS = "backend/resources/AppointmentSkeletonCalendar.ics"
+# Set these in Railway project env, not here:
+# GEMINI_API_KEY=
+# GOOGLE_SERVICE_ACCOUNT_JSON_BASE64=
+# CORS_ALLOW_ORIGINS=https://YOUR-PROJECT.vercel.app
+

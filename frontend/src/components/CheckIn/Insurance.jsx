@@ -1,11 +1,17 @@
 import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
+import { submitInsurance } from '../../services/api';
+import { useNavigate } from 'react-router-dom';
 
 export const Insurance = () => {
+  const navigate = useNavigate();
   const [startDate, setStartDate] = useState(null);
   const [formData, setFormData] = useState({
     provider: '',
+    company: '',
+    plan: '',
+    service: '',
     policyNumber: '',
     groupNumber: '',
     planType: '',
@@ -13,22 +19,35 @@ export const Insurance = () => {
     insuredDOB: '',
     email: '',
   });
+  const [submitting, setSubmitting] = useState(false);
+  const [result, setResult] = useState(null);
+  const [error, setError] = useState(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const combinedInsurance = `${formData.policyNumber} | ${formData.groupNumber} | ${formData.planType}`;
-
-    const submissionData = {
-      ...formData,
-      combinedInsurance,
-    };
-
-    console.log('Insurance info submitted:', submissionData);
+    setSubmitting(true);
+    setError(null);
+    setResult(null);
+    try {
+      const payload = {
+        provider: formData.provider,
+        company: formData.company,
+        plan: formData.plan,
+        service: formData.service || 'General Consultation',
+      };
+      const res = await submitInsurance(payload);
+      setResult(res);
+      setTimeout(() => navigate('/checkin/records'), 600);
+    } catch (err) {
+      setError(err.message || 'Insurance lookup failed');
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -49,7 +68,47 @@ export const Insurance = () => {
           />
         </div>
 
-        <div className="flex flex-col md:flex-row gap-2 md:gap-3">
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-800 font-medium">Insurance Company</label>
+          <input
+            type="text"
+            name="company"
+            placeholder="Aetna"
+            value={formData.company}
+            onChange={handleChange}
+            className="rounded-lg w-full py-1 px-2 text-gray-900 bg-white/30 border border-gray-300 hover:border-gray-700/50 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-50"
+            required
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-800 font-medium">Insurance Company</label>
+          <input
+            type="text"
+            name="company"
+            placeholder="Aetna"
+            value={formData.company}
+            onChange={handleChange}
+            className="rounded-lg w-full py-1 px-2 text-gray-900 bg-white/30 border border-gray-300 hover:border-gray-700/50 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-50"
+            required
+          />
+        </div>
+
+        <div className="flex flex-col gap-1">
+          <label className="text-gray-800 font-medium">Plan</label>
+          <input
+            type="text"
+            name="plan"
+            placeholder="Aetna Open Choice PPO"
+            value={formData.plan}
+            onChange={handleChange}
+            className="rounded-lg w-full py-1 px-2 text-gray-900 bg-white/30 border border-gray-300 hover:border-gray-700/50 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-50"
+            required
+          />
+        </div>
+
+        
+        <div className="flex flex-col md:flex-row gap-3">
           <div className="flex-1 flex flex-col gap-1">
             <label className="text-gray-800 font-medium text-sm md:text-md">Policy Number</label>
             <input
@@ -134,10 +193,18 @@ export const Insurance = () => {
 
         <button
           type="submit"
-          className="w-full py-2 px-4 rounded-full bg-black hover:bg-gray-900 cursor-pointer text-white font-inter font-medium transition-all duration-50"
+          disabled={submitting}
+          className="w-full py-2 px-4 rounded-full bg-black hover:bg-gray-900 disabled:opacity-60 cursor-pointer text-white font-inter font-medium transition-all duration-50"
         >
-          Submit
+          {submitting ? 'Submitting...' : 'Submit'}
         </button>
+
+        {error && (
+          <div className="text-red-600 text-sm">{error}</div>
+        )}
+        {result && (
+          <pre className="text-xs bg-white/50 p-3 rounded-lg border border-gray-200 overflow-x-auto">{JSON.stringify(result, null, 2)}</pre>
+        )}
       </form>
     </div>
   );
