@@ -68,10 +68,10 @@ const Stepper = () => {
   return (
     <div
       ref={stepperRef}
-      className={`fixed top-20 left-5 z-40 flex flex-col py-3 px-2 border bg-gray-900 backdrop-blur-sm mt-15 shadow-lg rounded-4xl`}
+      className={`fixed top-20 left-5 z-40 flex flex-col py-3 px-2 border bg-gray-900 backdrop-blur-sm mt-15 shadow-lg rounded-4xl 
+        transition-all duration-500 ease-in-out`}
       style={{
-        width: isExpanded ? '14rem' : '4rem', // same as before
-        transition: 'width 0.15s ease-out',
+        width: isExpanded ? '14rem' : '4rem',
       }}
     >
       {/* Toggle button */}

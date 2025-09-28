@@ -105,7 +105,7 @@ export const Appointments = () => {
             placeholder="Describe your reason for the appointment"
             value={formData.reason}
             onChange={handleChange}
-            className="w-full rounded-lg py-1 px-2  text-gray-900 bg-white/30 border border-gray-300 hover:border-blue-400/50 focus:outline-none focus:ring-4 focus:ring-blue-400/50transition-all duration-50"
+            className="w-full rounded-lg py-1 px-2  text-gray-900 bg-white/30 border border-gray-300 hover:border-blue-400/50 focus:outline-none focus:ring-4 focus:ring-blue-400/50 transition-all duration-50"
             rows={4}
           />
         </div>
