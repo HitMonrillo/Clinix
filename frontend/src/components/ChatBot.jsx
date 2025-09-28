@@ -48,7 +48,7 @@ export const ChatBot = () => {
 
   return (
     <div className="fixed top-15 inset-x-0 bottom-0 z-50 flex w-screen font-inter">
-      <div className="flex flex-col w-screen bg-gray-100/25 backdrop-blur-sm shadow-lg transition-all duration-150">
+      <div className="flex flex-col w-screen transition-all duration-150">
         
        
         <div className="flex items-center justify-between px-6 py-4 border-gray-300">
@@ -62,8 +62,8 @@ export const ChatBot = () => {
               key={msg.id}
               className={`px-4 py-2 rounded-2xl max-w-[70%] break-all whitespace-pre-wrap sm:leading-6 transition-all duration-150 ${
                 msg.from === 'ai'
-                  ? 'flex items-center gap-3 px-4 py-2 rounded-2xl transition-all duration-150 hover:bg-gray-300/20 text-sm bg-neutral-100/70 backdrop-blur-xl border border-black/25 text-black self-start'
-                  : 'flex items-center gap-3 px-4 py-2 rounded-2xl transition-all duration-150 hover:bg-gray-700 text-sm bg-gray-800/60 text-white self-end'
+                  ? 'flex items-center gap-3 px-4 py-2 rounded-2xl transition-all duration-150 hover:bg-gray-300/80 cursor-pointer text-sm bg-neutral-100/70 backdrop-blur-xl border border-black/25 text-black self-start'
+                  : 'flex items-center gap-3 px-4 py-2 rounded-2xl transition-all duration-150 hover:bg-gray-700 text-sm cursor-pointer bg-gray-800/60 text-white self-end'
               }`}
             >
               {msg.text}

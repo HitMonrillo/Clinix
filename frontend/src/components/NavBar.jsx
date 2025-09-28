@@ -1,73 +1,116 @@
-import React, { useState, useEffect, useContext } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import React, { useState, useEffect, useContext, useRef } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faChartSimple, faCommentDots,  faUser,  faUserCheck, } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faCommentDots, faUserCheck, faCircleDot } from '@fortawesome/free-solid-svg-icons';
 import { MobileNav } from './MobileNav';
 import { ScreenContext } from '../Layouts/RootLayout';
 
 const NavBar = () => {
-  const navItems =[
-    
-    {icon:faUserCheck, label:'Check-In', path:'/checkin'},
-    
-    {icon:faCommentDots, label:'Chat', path:'/chat'},
-    
+  const navItems = [
+    { icon: faUserCheck, label: 'Check-In', path: '/checkin' },
+    { icon: faCommentDots, label: 'Chat', path: '/chat' },
   ];
 
-  const [isMobileOpen, setIsMobileOpen]= useState(false);
-  const {isMobile} = useContext(ScreenContext)
- 
+  const { isMobile } = useContext(ScreenContext);
+  const [isMobileOpen, setIsMobileOpen] = useState(false);
+  const location = useLocation();
+  const navRefs = useRef([]);
+
+  // Add faCircleDot as first item
+  const allItems = [
+    { icon: faCircleDot, label: '', path: '/dot' },
+    { label: 'Clinix', path: '/' },
+    ...navItems
+  ];
+
+  const getInitialIndex = () => {
+    const index = allItems.findIndex(item => item.path === location.pathname);
+    return index >= 0 ? index : 0;
+  };
+
+  const [activeIndex, setActiveIndex] = useState(getInitialIndex);
+  const [bgStyle, setBgStyle] = useState({ left: 0, width: 0 });
+
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    const el = navRefs.current[activeIndex];
+    if (el) {
+      setBgStyle({
+        left: el.offsetLeft,
+        width: el.offsetWidth,
+      });
+    }
+  }, [activeIndex, isMobileOpen]);
+
+  useEffect(() => {
+    const index = allItems.findIndex(item => item.path === location.pathname);
+    if (index >= 0) setActiveIndex(index);
+  }, [location.pathname]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      const el = navRefs.current[activeIndex];
+      if (el) {
+        setBgStyle({
+          left: el.offsetLeft,
+          width: el.offsetWidth,
+        });
+      }
+    };
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, [activeIndex]);
 
   return (
-   
-   <>
-    <nav className='sticky z-50 border-b border-white' >
-        <div className='sticky flex flex-row   w-screen px-5 py-3 font-inter items-center justify-between bg-white/60'>
-          <div><Link to="/" className=' hidden lg:block font-semibold font-inter text-xl sm:text-center px-3 py-1'>Clinix</Link></div>
-          
-          <div className=' lg:flex flex-row gap-10 hidden '>
-              { navItems.map(({label, path}) => (
-                <NavLink
-                  key={path}
-                  to={path}
-                  className={({ isActive }) =>
-                    `flex items-center gap-2 rounded-xl px-3 py-1 transition-colors ${
-                      isActive
-                        ? "text-black"
-                        : "text-zinc-500 lg:hover:text-black"
-                    } ${
-                      "hover:bg-zinc-300/50 active:bg-zinc-300/50 lg:hover:bg-transparent"
-                    }`
-                  }
-                >                  
-                    <span className='font-normal'>{label}</span>
-                </NavLink>
-              ))}
-            
+    <>
+      <nav className="fixed top-0 left-1/2 -translate-x-1/2 z-50 flex justify-center pointer-events-none rounded w-full py-2">
+        <div
+          onClick={() => setIsMobileOpen(prev => !prev)}
+          className={`flex items-center justify-between gap-6 bg-gray-900 ${isMobile ? 'hover:bg-zinc-600' : ''} cursor-pointer backdrop-blur-md rounded-full shadow-md px-4 py-1.5 w-auto max-w-lg pointer-events-auto relative`}
+        >
+          <div className="hidden lg:flex relative flex-row gap-6">
+            <span
+              className="absolute top-0 bottom-0 bg-white/90 rounded-full transition-all duration-500 ease-in-out"
+              style={{ left: bgStyle.left, width: bgStyle.width }}
+            />
+
+
+            {allItems.map((item, index) => {
+              const isLogo = index === 1; // Clinix is now second item
+              const Component = isLogo ? Link : NavLink;
+              const to = item.path;
+
+              return (
+                <Component
+                  key={to}
+                  to={to}
+                  ref={el => (navRefs.current[index] = el)}
+                 className={`relative z-10 flex items-center gap-2 rounded-full px-3 py-1 transition-all duration-300 ${
+                  activeIndex === index ? 'text-black bg-white' : 'text-white hover:scale-110'
+                }`}
+                  onClick={() => setActiveIndex(index)}
+                >
+                  {item.icon && <FontAwesomeIcon icon={item.icon} className="w-4 h-4" />}
+                  {item.label && <span className="font-poppins">{item.label}</span>}
+                </Component>
+              );
+            })}
           </div>
-            
-        <div className='hidden lg:flex gap-5  items-center font-inter'>
-            <Link to="/Login" className='hover:text-zinc-500 active:text-black transition-colors'>Login</Link>
-            <Link to="/SignIn" className='text-white border-black rounded-full bg-black px-6 w-auto py-2 hover:cursor-pointer hover:bg-zinc-700 active:bg-black transition-colors'>Sign Up</Link>
-        </div>
-          <div className='lg:hidden flex justify-between items-center  w-screen'>
-            <FontAwesomeIcon icon={faBars} onClick={() => setIsMobileOpen(prev => !prev) } className='hidden cursor-pointer lg:hidden  rounded-full px-2 py-2.25 hover:bg-zinc-300/50 active:bg-zinc-300/75'/> 
-            <div><Link to="/" className='font-semibold text-xl sm:text-center font-inter'>Clinix</Link></div>
-            <Link to={"/SignIn"}><FontAwesomeIcon icon={faUser} className='hidden cursor-pointer  rounded-full px-2 py-2.25 hover:bg-zinc-200/75 active:bg-zinc-300/75'/> </Link>
+
+          <div className="lg:hidden flex items-center">
+            <FontAwesomeIcon
+              icon={faBars}
+              onClick={() => setIsMobileOpen(prev => !prev)}
+              className="cursor-pointer rounded-full px-3 py-2 text-white transition-colors"
+            />
           </div>
         </div>
       </nav>
-      
-      
-      {isMobile && isMobileOpen && <MobileNav navItems={navItems} onClose={() => setIsMobileOpen(false)}/>}
 
+      {isMobile && isMobileOpen && (
+        <MobileNav navItems={navItems} onClose={() => setIsMobileOpen(false)} />
+      )}
     </>
-  )
-}
+  );
+};
 
-export default NavBar
+export default NavBar;
