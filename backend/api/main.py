@@ -134,7 +134,7 @@ def create_appointment_agents(api_key: str):
 
 
 # Prefer stable, widely available default model
-GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-1.5-flash")
+GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-2.5-flash")
 
 
 def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
@@ -161,7 +161,7 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
                 return
 
             # Try requested model, then fallbacks if needed
-            candidates = [model_name, "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash-lite", "gemini-pro"]
+            candidates = [model_name, "gemini-2.5-flash", "gemini-2.5-flash-lite", "gemini-2.0-flash-lite", "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-pro"]
             for name in [m for m in candidates if m]:
                 try:
                     self.model = genai.GenerativeModel(name)
