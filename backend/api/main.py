@@ -7,10 +7,19 @@ PROJECT_ROOT = BASE_DIR.parent
 
 try:
     from dotenv import load_dotenv
-    dotenv_path = BASE_DIR / ".env"
-    if not dotenv_path.exists():
-        dotenv_path = PROJECT_ROOT / ".env"
-    load_dotenv(dotenv_path)
+    # Try common locations: backend/api/.env, backend/.env, repo_root/.env
+    candidate_paths = [
+        BASE_DIR / ".env",
+        PROJECT_ROOT / ".env",
+        PROJECT_ROOT.parent / ".env",
+    ]
+    for p in candidate_paths:
+        if p.exists():
+            load_dotenv(p)
+            break
+    else:
+        # Fallback to default loader (uses CWD)
+        load_dotenv()
 except Exception:
     # dotenv is optional in production
     pass
@@ -128,6 +137,9 @@ GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-flash-latest")
 
 
 def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
+    # Resolve API key from common env var aliases if not provided explicitly
+    resolved_key = api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GENAI_API_KEY") or os.getenv("GOOGLE_GENAI_API_KEY") or os.getenv("GOOGLEAI_API_KEY") or ""
+
     class GeminiWrapper:
         def __init__(self, api_key: str, model_name: str):
             self.model = None
@@ -141,7 +153,10 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
 
         def generate_response(self, query: str, instruction: str) -> str:
             if not self.model:
-                return "I'm a demo assistant. Configure Gemini to answer knowledge queries."
+                return (
+                    "Knowledge model is not configured. Please set GEMINI_API_KEY or "
+                    "GOOGLE_API_KEY on the backend environment."
+                )
 
             prompt = (
                 f"Instruction: {instruction}\n"
@@ -156,7 +171,7 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
                 logger.error(f"Gemini knowledge call failed: {exc}")
                 return "I'm not sure how to answer that right now."
 
-    llm = GeminiWrapper(api_key, GENAI_MODEL)
+    llm = GeminiWrapper(resolved_key, GENAI_MODEL)
     return KnowledgeAgent(llm, escalate_to_human)
 
 
