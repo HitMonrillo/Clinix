@@ -1,11 +1,10 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { submitAppointment } from '../../services/api';
 
 export const Appointments = () => {
   const [startDate, setStartDate] = useState(null);
-  const [time, setTime] = useState('');
   const [formData, setFormData] = useState({
     fullName: '',
     email: '',
@@ -20,6 +19,83 @@ export const Appointments = () => {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState(null);
   const [error, setError] = useState(null);
+
+  const buildBookingDetails = (res) => {
+    if (!res) return null;
+
+    const bookingString = typeof res === 'string' ? res : res?.booking;
+    const plan = typeof res === 'object' ? res?.plan : null;
+
+    let patient = formData.fullName || '';
+    let doctor = plan?.doctor || '';
+    let date = plan?.date || plan?.appointment_date || '';
+    let startTime = plan?.start_time || plan?.start || '';
+    let endTime = plan?.end_time || plan?.end || '';
+
+    if (typeof bookingString === 'string' && bookingString.includes('reserved for')) {
+      const match = bookingString.match(/reserved for (.*?) with (.*?) at (.*)/i);
+      if (match) {
+        if (!patient) patient = match[1]?.trim();
+        if (!doctor) doctor = match[2]?.trim();
+
+        const timeRange = match[3] || '';
+        const [startPart, endPart] = timeRange.split(' - ').map((part) => part?.trim());
+
+        if (startPart) {
+          const [maybeDate, maybeTime] = startPart.split(' ');
+          if (!date && maybeDate) date = maybeDate.trim();
+          if (maybeTime) startTime = maybeTime.trim();
+          else if (!startTime) startTime = startPart;
+        }
+
+        if (endPart) {
+          const pieces = endPart.split(' ');
+          endTime = pieces[pieces.length - 1].trim();
+        }
+      }
+    }
+
+    const normalizeTime = (timeValue) => {
+      if (!timeValue) return '';
+      if (timeValue.includes('T')) return timeValue;
+      if (timeValue.includes(' ')) return timeValue.replace(' ', 'T');
+      return date ? `${date}T${timeValue}` : timeValue;
+    };
+
+    const formatDate = (value) => {
+      if (!value) return '—';
+      try {
+        const dateObj = new Date(value);
+        if (Number.isNaN(dateObj.valueOf())) return value;
+        return new Intl.DateTimeFormat('en-US', { dateStyle: 'long' }).format(dateObj);
+      } catch {
+        return value;
+      }
+    };
+
+    const formatTime = (value) => {
+      if (!value) return '—';
+      const normalized = normalizeTime(value);
+      try {
+        const dateObj = new Date(normalized);
+        if (Number.isNaN(dateObj.valueOf())) return value;
+        return new Intl.DateTimeFormat('en-US', { timeStyle: 'short' }).format(dateObj);
+      } catch {
+        return value;
+      }
+    };
+
+    return {
+      patient: patient || '—',
+      doctor: doctor || 'Primary Care',
+      date: formatDate(date),
+      startTime: formatTime(startTime),
+      endTime: formatTime(endTime),
+      raw: bookingString,
+    };
+  };
+
+  const bookingDetails = useMemo(() => buildBookingDetails(result), [result]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -70,18 +146,6 @@ export const Appointments = () => {
             required
           />
         </div>
-        <div className="flex flex-col gap-1">
-          <label className="text-gray-800 font-medium">Hospital Id</label>
-          <input
-            type="id"
-            name="email"
-            placeholder="#123456789"
-            value={formData.id}
-            onChange={handleChange}
-            className="w-full rounded-lg py-1 px-2  text-gray-900 bg-white/30 border border-gray-300 hover:border-gray-700/50 focus:outline-none focus:ring-4 focus:ring-blue-400/50 s transition-all duration-50"
-            required
-          />
-        </div>
 
         
         <div className="flex flex-col gap-1">
@@ -121,8 +185,31 @@ export const Appointments = () => {
         {error && (
           <div className="text-red-600 text-sm">{error}</div>
         )}
-        {result && (
-          <pre className="text-xs bg-white/50 p-3 rounded-lg border border-gray-200 overflow-x-auto">{JSON.stringify(result, null, 2)}</pre>
+        {result && bookingDetails && (
+          <div className="mt-4 p-5 rounded-2xl border border-gray-200 bg-white/80 shadow-md">
+            <h3 className="text-lg font-semibold text-gray-900 mb-3">Appointment Confirmed</h3>
+            <div className="flex flex-col gap-2 text-sm text-gray-700">
+              <div className="flex justify-between">
+                <span className="font-medium">Patient</span>
+                <span>{bookingDetails.patient}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Doctor</span>
+                <span>{bookingDetails.doctor}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Date</span>
+                <span>{bookingDetails.date}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="font-medium">Time</span>
+                <span>{bookingDetails.startTime} – {bookingDetails.endTime}</span>
+              </div>
+            </div>
+            {bookingDetails.raw && (
+              <p className="mt-3 text-xs text-gray-500 italic">{bookingDetails.raw}</p>
+            )}
+          </div>
         )}
       </form>
     </div>
