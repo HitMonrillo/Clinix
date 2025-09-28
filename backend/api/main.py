@@ -130,7 +130,7 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
                 try:
                     genai.configure(api_key=api_key, transport="rest")
                     self.model = genai.GenerativeModel(model_name)
-                except Exception as exc:  # pragma: no cover - network failures
+                except Exception as exc:
                     logger.warning(f"Failed to initialize Gemini knowledge model: {exc}")
                     self.model = None
 
@@ -147,7 +147,7 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
                 response = retry(lambda: self.model.generate_content(prompt))
                 text = getattr(response, "text", "")
                 return text.strip() or "I'm not sure how to answer that right now."
-            except Exception as exc:  # pragma: no cover - network failures
+            except Exception as exc:
                 logger.error(f"Gemini knowledge call failed: {exc}")
                 return "I'm not sure how to answer that right now."
 
