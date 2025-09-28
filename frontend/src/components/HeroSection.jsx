@@ -95,7 +95,7 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
         
         {showArrow && (
           <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-5 cursor-pointer">
-            <button onClick={() => navigate('/SignIn')} className="cursor-pointer">
+            <button onClick={() => navigate('/checkin')} className="cursor-pointer">
               <FontAwesomeIcon icon={faArrowDown} className="animate-bounce hover:scale-120 transition-all" />
             </button>
           </div>
