@@ -32,13 +32,34 @@ class AppointmentPlannerAgent:
                 self.model = None
 
     def plan_slot(self, skeleton_calendar, time_length, user_timezone, lunch_time: list):
-        # Open and read the ICS file
+        # Open and read the ICS file (robust path resolution)
         BASE_DIR = os.path.dirname(__file__)
+        PROJECT_DIR = os.path.dirname(BASE_DIR)  # backend directory
 
-        # PROJECT_DIR = backend
-        PROJECT_DIR = os.path.dirname(BASE_DIR)
+        # Accept absolute paths, existing relative paths, or just a filename.
+        # Try several candidates to avoid duplicating path segments.
+        candidates = []
+        if isinstance(skeleton_calendar, str) and skeleton_calendar.strip():
+            sc = os.path.normpath(skeleton_calendar)
+            # 1) Absolute or exists as provided (relative to CWD)
+            if os.path.isabs(sc) or os.path.exists(sc):
+                candidates.append(sc)
+            # 2) Relative to the backend project dir
+            candidates.append(os.path.join(PROJECT_DIR, sc))
+            # 3) Under backend/resources with provided value
+            candidates.append(os.path.join(PROJECT_DIR, "resources", sc))
+            # 4) Under backend/resources using only the basename
+            candidates.append(os.path.join(PROJECT_DIR, "resources", os.path.basename(sc)))
 
-        ics_path = os.path.join(PROJECT_DIR, "resources", skeleton_calendar)
+        # Fallback default path
+        candidates.append(os.path.join(PROJECT_DIR, "resources", "AppointmentSkeletonCalendar.ics"))
+
+        ics_path = next((p for p in candidates if os.path.exists(p)), None)
+        if not ics_path:
+            raise FileNotFoundError(
+                f"Could not locate ICS file. Tried: {candidates}"
+            )
+
         with open(ics_path, 'r', encoding='utf-8') as file:
             calendar_data = file.read()
 
