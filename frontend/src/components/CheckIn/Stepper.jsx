@@ -74,8 +74,8 @@ const Stepper = () => {
   return (
     <div
       ref={stepperRef}
-      className={`fixed top-20 left-5 z-40 flex flex-col gap-2 py-3 px-2 mt-15 border-2 border-white 
-        ${isExpanded ? 'w-60 bg-gray-300/40 rounded-4xl ' : 'w-16 bg-gray-300/40 border border-white rounded-full duration-350'}
+      className={`fixed top-20 left-5 z-40 flex flex-col gap-2 py-3 px-2 mt-15 border- border-gray-900
+        ${isExpanded ? 'w-60  bg-gray-900/70 rounded-4xl ' : 'w-16  bg-gray-900/70 border  rounded-full duration-350'}
         backdrop-blur-sm shadow-lg transition-all duration-80`}
     >
       
@@ -83,13 +83,13 @@ const Stepper = () => {
         onClick={() => setIsExpanded(!isExpanded)} 
         className="flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-300/40 rounded-full transition-all duration-300"
       >
-        <span className={`${isExpanded ? 'font-medium text-gray-800' : 'sr-only'}`}>
+        <span className={`${isExpanded ? 'font-medium text-white' : 'sr-only'}`}>
           {currentStep.name}
         </span>
 
         <FontAwesomeIcon
           icon={faCaretRight}
-          className={`text-gray-800 transform transition-transform text-md ${isExpanded ? "rotate-180" : ""}`}
+          className={`text-white transform transition-transform text-md ${isExpanded ? "rotate-180" : ""}`}
         />
       </div>
 
@@ -98,7 +98,7 @@ const Stepper = () => {
         
         {isExpanded && (
           <span
-            className="absolute left-0 right-0 bg-black/50 rounded-full transition-all duration-500 ease-out"
+            className="absolute left-0 right-0  bg-gray-900/50 rounded-full transition-all duration-500 ease-out"
             style={{ top: bgStyle.top, height: bgStyle.height }}
           />
         )}
@@ -111,7 +111,7 @@ const Stepper = () => {
           className={`relative z-10 flex items-center gap-3 px-4 py-2 rounded-full transition-all duration-150 text-sm h-10
             ${step.path === currentStep.path 
               ? 'text-white font-semibold ' 
-              : 'text-gray-700 hover:text-gray-900 hover:bg-gray-700/20'}
+              : 'text-gray-300 hover:text-white hover:bg-gray-700'}
             ${!isExpanded ? 'justify-center p-3 w-12 h-1' : ''}
             ${
         index === activeIndex && isExpanded ? 'text-black' : ''} cursor-pointer`}

@@ -57,7 +57,7 @@ export const Records = () => {
   };
 
   return (
-    <div className="flex justify-center items-start px-4">
+    <div className="flex justify-center items-start px-4 mt-30">
       <form className="w-full max-w-lg p-6 flex flex-col gap-6 font-inter" onSubmit={handleSubmit}>
         <h2 className="text-xl font-medium font-roboto text-gray-900">Medical Records</h2>
         <div className="flex flex-col gap-1">

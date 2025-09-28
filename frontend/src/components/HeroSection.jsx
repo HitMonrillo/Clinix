@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
 
-const HeroSection = () => {
+  const HeroSection = () => {
   const [showArrow, setShowArrow] = useState(false);
   const [blobs, setBlobs] = useState([
     { id: 1, color: "from-blue-600 to-blue-500/80" },
@@ -65,14 +65,18 @@ const HeroSection = () => {
       </div>
 
       <section className="min-h-[90vh] xl:h-vh flex flex-col items-center justify-center text-center px-5 gap-5 w-auto h-auto z-20 relative">
-        <div className='flex flex-col items-center justify-center'>
-          <h1 className="text-xl md:text-6xl sm:text-5xl font-poppins font-medium mb-2 flex flex-col gap-2 tracking-[0.02em] ">
-          <span>Clinix: Seamless Care </span>
-          <span>Starts Here.</span>
-        </h1>
-        <p className="text-xs sm:text-sm md:text-md mt-5 font-poppins font-medium text-gray-800 max-w-md w-full sm:w-md lg:w-md mb-6 leading-loose">
-  Appointments made <b>fast</b>. Records made <b>simple</b>. Care made <b>awesome</b>.
-</p>
+        <div className='flex flex-col items-center justify-center  gap-5'>
+          <div className='flex flex-col  items-center justify-center '>
+            <h1 className="text-xl  md:text-6xl sm:text-5xl flex flex-col font-poppins font-medium mb-2 tracking-[0.02em] ">
+              <span>Clinix: Seamless Care </span>
+              <span>Starts Here.</span>
+            </h1>
+            <p className="text-xs  sm:text-sm md:text-md mt-5 font-poppins font-medium text-gray-800 max-w-md w-full sm:w-md lg:w-md mb-6 leading-loose">
+                Appointments made <b>fast</b>. Records made <b>simple</b>. Care made <b>awesome</b>.
+              </p>
+          </div>
+          
+        
         <div className="flex flex-row gap-5 font-inter">
           <Link
             to="/checkin"
