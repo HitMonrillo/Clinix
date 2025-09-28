@@ -37,7 +37,7 @@ class MedicalPlannerAgent:
         {{
             "row": "...",
             "patient_id": "...",
-            "field": "Labs | Prescriptions | Allergies | Notes | Vaccinations | etc."
+            "field": "Labs | Prescriptions | Exam | Notes | Vaccinations | etc."
         }}
 
         Respond with ONLY valid JSON. No explanation or text outside the JSON.
