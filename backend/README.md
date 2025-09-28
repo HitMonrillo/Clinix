@@ -12,7 +12,7 @@ Docker
 
 Environment variables
 - GEMINI_API_KEY or GOOGLE_API_KEY (also supports GENAI_API_KEY): Optional. When set, enables Gemini for the knowledge agent
-- KNOWLEDGE_MODEL: Optional Gemini model name for the knowledge agent (default: gemini-flash-latest)
+- KNOWLEDGE_MODEL: Optional Gemini model name for the knowledge agent (default: gemini-1.5-flash). Other valid options: gemini-1.5-pro, gemini-1.5-flash-latest, gemini-pro.
 - SKELETON_SPREADSHEET_PATH: Optional path to skeleton CSV (default: backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv)
 - FULL_SPREADSHEET_PATH: Optional path to full CSV (default: backend/utils/MedicalRecordSpreadsheet - Sheet1.csv)
 - APPOINTMENT_SKELETON_ICS: Optional ICS path (default: backend/resources/AppointmentSkeletonCalendar.ics)

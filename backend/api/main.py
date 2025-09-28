@@ -133,23 +133,44 @@ def create_appointment_agents(api_key: str):
     return planner, executor
 
 
-GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-flash-latest")
+# Prefer stable, widely available default model
+GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-1.5-flash")
 
 
 def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
     # Resolve API key from common env var aliases if not provided explicitly
     resolved_key = api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GENAI_API_KEY") or os.getenv("GOOGLE_GENAI_API_KEY") or os.getenv("GOOGLEAI_API_KEY") or ""
+    if resolved_key:
+        logger.info(f"Knowledge agent: API key detected. Using model '{GENAI_MODEL}'.")
+    else:
+        logger.warning("Knowledge agent: No API key found in GEMINI_API_KEY/GOOGLE_API_KEY/GENAI_API_KEY.")
 
     class GeminiWrapper:
         def __init__(self, api_key: str, model_name: str):
             self.model = None
-            if api_key and genai is not None:
+            if not api_key:
+                logger.warning("Knowledge agent: Missing API key; Gemini disabled.")
+                return
+            if genai is None:
+                logger.warning("Knowledge agent: google-generativeai not installed; Gemini disabled.")
+                return
+            try:
+                genai.configure(api_key=api_key, transport="rest")
+            except Exception as exc:
+                logger.warning(f"Knowledge agent: Failed to configure Gemini client: {exc}")
+                return
+
+            # Try requested model, then fallbacks if needed
+            candidates = [model_name, "gemini-1.5-flash", "gemini-1.5-flash-latest", "gemini-1.5-pro", "gemini-pro"]
+            for name in [m for m in candidates if m]:
                 try:
-                    genai.configure(api_key=api_key, transport="rest")
-                    self.model = genai.GenerativeModel(model_name)
+                    self.model = genai.GenerativeModel(name)
+                    logger.info(f"Knowledge agent: Initialized Gemini model '{name}'.")
+                    break
                 except Exception as exc:
-                    logger.warning(f"Failed to initialize Gemini knowledge model: {exc}")
-                    self.model = None
+                    logger.warning(f"Knowledge agent: Failed to init model '{name}': {exc}")
+            if not self.model:
+                logger.error("Knowledge agent: Could not initialize any Gemini model; knowledge disabled.")
 
         def generate_response(self, query: str, instruction: str) -> str:
             if not self.model:
