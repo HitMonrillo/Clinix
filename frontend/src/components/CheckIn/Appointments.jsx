@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { submitAppointment } from '../../services/api';
-import { useNavigate } from 'react-router-dom';
 
 export const Appointments = () => {
-  const navigate = useNavigate();
   const [startDate, setStartDate] = useState(null);
   const [time, setTime] = useState('');
   const [formData, setFormData] = useState({
@@ -32,7 +30,6 @@ export const Appointments = () => {
       const payload = { patientName: formData.fullName, patientEmail: formData.email };
       const res = await submitAppointment(payload);
       setResult(res);
-      setTimeout(() => navigate('/checkin/insurance'), 600);
     } catch (err) {
       setError(err.message || 'Appointment scheduling failed');
     } finally {

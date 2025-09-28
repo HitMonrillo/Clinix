@@ -1,9 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { submitRecords } from "../../services/api";
-import { useNavigate } from "react-router-dom";
 
 export const Records = () => {
-  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     recordType: "",
     provider: "",
@@ -48,7 +46,6 @@ export const Records = () => {
       const payload = { query: query || `Find ${formData.recordType || 'Labs'} for patient` };
       const res = await submitRecords(payload);
       setResult(res);
-      setTimeout(() => navigate('/checkin/questions'), 600);
     } catch (err) {
       setError(err.message || 'Record fetch failed');
     } finally {

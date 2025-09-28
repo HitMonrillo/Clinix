@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 import { submitInsurance } from '../../services/api';
-import { useNavigate } from 'react-router-dom';
 
 export const Insurance = () => {
-  const navigate = useNavigate();
   const [startDate, setStartDate] = useState(null);
   const [formData, setFormData] = useState({
     provider: '',
@@ -42,7 +40,6 @@ export const Insurance = () => {
       };
       const res = await submitInsurance(payload);
       setResult(res);
-      setTimeout(() => navigate('/checkin/records'), 600);
     } catch (err) {
       setError(err.message || 'Insurance lookup failed');
     } finally {
