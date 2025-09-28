@@ -139,7 +139,7 @@ GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-1.5-flash")
 
 def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
     # Resolve API key from common env var aliases if not provided explicitly
-    resolved_key = api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GENAI_API_KEY") or os.getenv("GOOGLE_GENAI_API_KEY") or os.getenv("GOOGLEAI_API_KEY") or ""
+    resolved_key = api_key or os.getenv("GEMINI_API_KEY") or os.getenv("GOOGLE_API_KEY") or os.getenv("GENAI_API_KEY") or os.getenv("GOOGLE_GENAI_API_KEY") or os.getenv("GOOGLEAI_API_KEY") or ""
     if resolved_key:
         logger.info(f"Knowledge agent: API key detected. Using model '{GENAI_MODEL}'.")
     else:
