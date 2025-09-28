@@ -1,6 +1,6 @@
 # Clinix – Seamless Care Starts Here
 
-Clinix is an AI-driven assistant that streamlines front-desk operations for hospitals and clinics. It coordinates appointments, assists with medical records, and estimates insurance coverage—while keeping patient data private.
+Clinix is a front-desk assistant (human-built) with an optional LLM chat module. It coordinates appointments, assists with medical records, and estimates insurance coverage—while keeping patient data private.
 
 ## ✨ Highlights
 - **Fast scheduling**: surfaces available appointment slots using anonymized calendar data.
@@ -9,12 +9,13 @@ Clinix is an AI-driven assistant that streamlines front-desk operations for hosp
 - **Privacy by design**: leverages “skeleton” datasets so large language models never touch sensitive data.
 
 ## 🧱 Architecture
-| Layer | Stack | Notes |
-| ----- | ----- | ----- |
-| Frontend | React 19, Vite, Tailwind CSS | Deployed to Vercel (`frontend/`) |
-| Backend | Python 3.11, FastAPI, Uvicorn | Deployed via Docker to Render or Railway (`backend/`) |
-| LLM | Google Gemini (default: `gemini-2.5-flash`) | Accessed through the knowledge agent |
-| Data | Skeleton CSVs & ICS template | Anonymous data shipped in `backend/utils/` and `backend/resources/` |
+| Layer     | Stack                               | Notes |
+|---------- |-------------------------------------|-------|
+| Frontend  | React 19, Vite, Tailwind CSS        | Deployed to Vercel (`frontend/`) |
+| Backend   | Python 3.11, FastAPI, Uvicorn       | Deployed via Docker to Render or Railway (`backend/`) |
+| Conversation engine (optional) | Google Gemini (default: `gemini-2.5-flash`) | Disabled if no API key; all actions run through our FastAPI controller |
+| Data      | Skeleton CSVs & ICS template        | Anonymous data in `backend/utils/` and `backend/resources/` |
+
 
 ## 🛡️ Privacy Strategy
 1. **No raw PHI in prompts** – Inputs from users are filtered; only the minimum needed reaches an LLM.
@@ -24,10 +25,10 @@ Clinix is an AI-driven assistant that streamlines front-desk operations for hosp
 ## 🚀 Getting Started
 
 ### Prerequisites
-- Node.js ≥ 20 for the frontend
-- Python ≥ 3.11 for the backend
-- A Google Gemini API key (`GEMINI_API_KEY`)
-- (Optional) Google service account JSON for Sheet integration through `gspread`
+- Node.js ≥ 20 (frontend)
+- Python ≥ 3.11 (backend)
+- **(Optional)** Google Gemini API key (`GEMINI_API_KEY`) for chat features
+- **(Optional)** Google service account JSON for Sheets via `gspread`
 
 ### Clone the project
 ```bash
@@ -103,7 +104,6 @@ All sample data is anonymized and intended purely for demonstration.
 
 ## 🙏 Credits
 - Built by the Clinix team
-- Powered by AI and a privacy-first mindset
 
 ---
-Questions or suggestions? Open an issue or reach out via the Clinix site: <https://clinix-eight.vercel.app/>.
+Questions or suggestions? Open an issue or reach out to the contributors!
