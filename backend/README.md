@@ -3,7 +3,7 @@ Clinix Backend API
 Quick start
 - Create a Python 3.10+ virtualenv
 - Install deps: `pip install -r backend/requirements.txt`
-- Copy env template: `cp backend/.env.example backend/.env` and fill values, or set env vars directly
+- Env vars: place a `.env` file in `backend/` or at the repo root (both are loaded). Example: `cp backend/.env.example backend/.env` and fill values.
 - Run: `uvicorn backend.api.main:app --reload --port 8000`
 
 Docker
@@ -11,8 +11,8 @@ Docker
 - Run: `docker run --rm -p 8000:8000 --env-file backend/.env clinix-backend`
 
 Environment variables
-- GEMINI_API_KEY: Optional. When missing, deterministic fallbacks are used for planners and the knowledge agent
-- KNOWLEDGE_MODEL: Optional Gemini model name for the knowledge agent (default: gemini-pro)
+- GEMINI_API_KEY or GOOGLE_API_KEY (also supports GENAI_API_KEY): Optional. When set, enables Gemini for the knowledge agent
+- KNOWLEDGE_MODEL: Optional Gemini model name for the knowledge agent (default: gemini-flash-latest)
 - SKELETON_SPREADSHEET_PATH: Optional path to skeleton CSV (default: backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv)
 - FULL_SPREADSHEET_PATH: Optional path to full CSV (default: backend/utils/MedicalRecordSpreadsheet - Sheet1.csv)
 - APPOINTMENT_SKELETON_ICS: Optional ICS path (default: backend/resources/AppointmentSkeletonCalendar.ics)

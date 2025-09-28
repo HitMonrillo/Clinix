@@ -1,9 +1,25 @@
 import os
+from pathlib import Path
 from typing import List
+
+BASE_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = BASE_DIR.parent
 
 try:
     from dotenv import load_dotenv
-    load_dotenv()
+    # Try common locations: backend/api/.env, backend/.env, repo_root/.env
+    candidate_paths = [
+        BASE_DIR / ".env",
+        PROJECT_ROOT / ".env",
+        PROJECT_ROOT.parent / ".env",
+    ]
+    for p in candidate_paths:
+        if p.exists():
+            load_dotenv(p)
+            break
+    else:
+        # Fallback to default loader (uses CWD)
+        load_dotenv()
 except Exception:
     # dotenv is optional in production
     pass
@@ -13,7 +29,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 import json
-from pathlib import Path
 
 from backend.utils.google import load_sheet_records
 from backend.utils.logging import get_logger
@@ -107,8 +122,7 @@ def create_medical_agents(api_key: str):
 
 def create_insurance_agents(api_key: str):
     planner = InsurancePlannerAgent(api_key=api_key)
-    # dataset not available yet; initialize with empty list
-    executor = InsuranceExecutorAgent()#heloooo
+    executor = InsuranceExecutorAgent()
     return planner, executor
 
 
@@ -119,10 +133,13 @@ def create_appointment_agents(api_key: str):
     return planner, executor
 
 
-GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-pro")
+GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-flash-latest")
 
 
 def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
+    # Resolve API key from common env var aliases if not provided explicitly
+    resolved_key = api_key or os.getenv("GOOGLE_API_KEY") or os.getenv("GENAI_API_KEY") or os.getenv("GOOGLE_GENAI_API_KEY") or os.getenv("GOOGLEAI_API_KEY") or ""
+
     class GeminiWrapper:
         def __init__(self, api_key: str, model_name: str):
             self.model = None
@@ -136,11 +153,16 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
 
         def generate_response(self, query: str, instruction: str) -> str:
             if not self.model:
-                return "I'm a demo assistant. Configure Gemini to answer knowledge queries."
+                return (
+                    "Knowledge model is not configured. Please set GEMINI_API_KEY or "
+                    "GOOGLE_API_KEY on the backend environment."
+                )
 
             prompt = (
                 f"Instruction: {instruction}\n"
-                "Provide concise, general medical guidance. Do not diagnose.\n"
+                "Respond in a warm, conversational tone. Offer at most two specific, relevant tips. "
+                "Avoid generic lifestyle lists and only suggest contacting a professional if the message sounds urgent. "
+                "Keep it under three sentences.\n"
                 f"Question: {query}"
             )
             try:
@@ -151,7 +173,7 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
                 logger.error(f"Gemini knowledge call failed: {exc}")
                 return "I'm not sure how to answer that right now."
 
-    llm = GeminiWrapper(api_key, GENAI_MODEL)
+    llm = GeminiWrapper(resolved_key, GENAI_MODEL)
     return KnowledgeAgent(llm, escalate_to_human)
 
 
