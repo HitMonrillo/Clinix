@@ -160,7 +160,9 @@ def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
 
             prompt = (
                 f"Instruction: {instruction}\n"
-                "Provide concise, general medical guidance. Do not diagnose.\n"
+                "Respond in a warm, conversational tone. Offer at most two specific, relevant tips. "
+                "Avoid generic lifestyle lists and only suggest contacting a professional if the message sounds urgent. "
+                "Keep it under three sentences.\n"
                 f"Question: {query}"
             )
             try:
