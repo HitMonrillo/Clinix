@@ -76,7 +76,7 @@ export const Appointments = () => {
         <div className="flex flex-col gap-1">
           <label className="text-gray-800 font-medium">Hospital Id</label>
           <input
-            type="email"
+            type="id"
             name="email"
             placeholder="#123456789"
             value={formData.id}

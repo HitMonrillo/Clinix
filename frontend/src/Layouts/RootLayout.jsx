@@ -2,6 +2,8 @@ import React, { createContext } from 'react'
 import NavBar from '../components/NavBar'
 import { Outlet } from 'react-router-dom'
 import { useState, useEffect } from 'react';
+import { ChatBot } from '../components/ChatBot';
+import { ChatBotToggle } from '../components/ChatBotToggle';
 
 export const ScreenContext = createContext({isMobile:false});
 
@@ -19,6 +21,7 @@ export const RootLayout = () => {
   return (
     <ScreenContext.Provider value={{isMobile}}>
         <NavBar/>
+        <ChatBotToggle/>
         <Outlet/>
     </ScreenContext.Provider>
   )
