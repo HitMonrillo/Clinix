@@ -14,10 +14,10 @@ services:
         sync: false
       - key: GOOGLE_APPLICATION_CREDENTIALS
         sync: false
-      - key: SKELETON_SPREADSHEET_NAME
-        value: MedicalRecordSkeletonSpreadsheet
-      - key: FULL_SPREADSHEET_NAME
-        value: MedicalRecordSpreadsheet
+      - key: SKELETON_SPREADSHEET_PATH
+        value: backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv
+      - key: FULL_SPREADSHEET_PATH
+        value: backend/utils/MedicalRecordSpreadsheet - Sheet1.csv
       - key: APPOINTMENT_SKELETON_ICS
         value: backend/resources/AppointmentSkeletonCalendar.ics
       - key: DEFAULT_TIMEZONE

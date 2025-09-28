@@ -15,12 +15,18 @@ def _parse_fields_column(rows):
 
 
 def load_skeleton_and_full_data():
-    """Load skeleton and full data sets from Google Sheets as configured by env vars."""
-    skeleton_spreadsheet = os.getenv("SKELETON_SPREADSHEET_NAME", "MedicalRecordSkeletonSpreadsheet")
-    full_spreadsheet = os.getenv("FULL_SPREADSHEET_NAME", "MedicalRecordSpreadsheet")
+    """Load skeleton and full data sets from local CSV files."""
+    skeleton_path = os.getenv(
+        "SKELETON_SPREADSHEET_PATH",
+        "backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv",
+    )
+    full_path = os.getenv(
+        "FULL_SPREADSHEET_PATH",
+        "backend/utils/MedicalRecordSpreadsheet - Sheet1.csv",
+    )
 
-    skeleton_data = load_sheet_records(skeleton_spreadsheet)
-    full_data = load_sheet_records(full_spreadsheet)
+    skeleton_data = load_sheet_records(skeleton_path)
+    full_data = load_sheet_records(full_path)
 
     return _parse_fields_column(skeleton_data), _parse_fields_column(full_data)
 

@@ -12,8 +12,8 @@ Docker
 
 Environment variables
 - GEMINI_API_KEY: Optional. When missing, deterministic fallbacks are used for planners
-- GOOGLE_SERVICE_ACCOUNT_JSON_BASE64 | GOOGLE_SERVICE_ACCOUNT_JSON | GOOGLE_APPLICATION_CREDENTIALS: Optional. When missing, local JSON resources are used instead of Google Sheets
-- SKELETON_SPREADSHEET_NAME, FULL_SPREADSHEET_NAME: Optional Google Sheet names
+- SKELETON_SPREADSHEET_PATH: Optional path to skeleton CSV (default: backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv)
+- FULL_SPREADSHEET_PATH: Optional path to full CSV (default: backend/utils/MedicalRecordSpreadsheet - Sheet1.csv)
 - APPOINTMENT_SKELETON_ICS: Optional ICS path (default: backend/resources/AppointmentSkeletonCalendar.ics)
 - DEFAULT_TIMEZONE, LUNCH_START, LUNCH_END: Optional scheduling settings
 - CORS_ALLOW_ORIGINS: Comma-separated list of allowed origins

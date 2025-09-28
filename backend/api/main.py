@@ -61,22 +61,23 @@ def _load_local_json(path: str) -> List[dict]:
 
 
 def load_skeleton_records() -> List[dict]:
-    name = os.getenv("SKELETON_SPREADSHEET_NAME")
+    path = os.getenv(
+        "SKELETON_SPREADSHEET_PATH",
+        "backend/utils/MedicalRecordSkeletonSpreadsheet - Sheet1.csv",
+    )
     try:
-        if name:
-            return load_sheet_records(name)
-        # If env not provided, try default; may fail without creds
-        return load_sheet_records("MedicalRecordSkeletonSpreadsheet")
+        return load_sheet_records(path)
     except Exception:
         return _load_local_json("backend/resources/skeleton_records.json")
 
 
 def load_full_records() -> List[dict]:
-    name = os.getenv("FULL_SPREADSHEET_NAME")
+    path = os.getenv(
+        "FULL_SPREADSHEET_PATH",
+        "backend/utils/MedicalRecordSpreadsheet - Sheet1.csv",
+    )
     try:
-        if name:
-            return load_sheet_records(name)
-        return load_sheet_records("MedicalRecordSpreadsheet")
+        return load_sheet_records(path)
     except Exception:
         return _load_local_json("backend/resources/full_records.json")
 
