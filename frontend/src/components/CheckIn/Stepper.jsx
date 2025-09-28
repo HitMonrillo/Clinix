@@ -74,7 +74,7 @@ const Stepper = () => {
         width: isExpanded ? '14rem' : '4rem',
       }}
     >
-      {/* Toggle button */}
+      
       <div
         onClick={() => setIsExpanded(!isExpanded)}
         className="flex items-center justify-between px-4 py-2 cursor-pointer hover:bg-gray-300/40 rounded-full transition-all duration-300"
@@ -88,7 +88,7 @@ const Stepper = () => {
         />
       </div>
 
-      {/* Steps drawer */}
+      
       <div className="relative mt-2 flex flex-col gap-5 overflow-hidden">
         <span
           className="absolute left-0 right-0 bg-gray-900 rounded-full transition-all duration-500 ease-out"

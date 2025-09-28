@@ -10,12 +10,12 @@ export const ChatBotToggle = () => {
     { id: 1, from: 'ai', text: 'Hello! How can I assist you today?' },
   ]);
   const [input, setInput] = useState('');
-  const [isExpanded, setIsExpanded] = useState(false); // start collapsed
+  const [isExpanded, setIsExpanded] = useState(false); 
   const chatRef = useRef(null);
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // Close on outside click
+  
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (chatRef.current && !chatRef.current.contains(e.target)) {
@@ -30,12 +30,12 @@ export const ChatBotToggle = () => {
     };
   }, [isExpanded]);
 
-  // Scroll to bottom on new messages
+  
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Auto-resize textarea
+  
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -79,10 +79,10 @@ export const ChatBotToggle = () => {
         width: isExpanded ? '20rem' : '3rem',
         height: isExpanded ? '70vh' : '3rem',
         borderRadius: isExpanded ? '1.5rem' : '50%',
-        backgroundColor: '#1f2937', // bg-gray-900
+        backgroundColor: '#1f2937', 
       }}
     >
-      {/* Toggle button when collapsed */}
+    
       {!isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
@@ -92,10 +92,10 @@ export const ChatBotToggle = () => {
         </button>
       )}
 
-      {/* Chat content */}
+   
       {isExpanded && (
         <>
-          {/* Collapse button */}
+         
           <div
             onClick={() => setIsExpanded(false)}
             className="flex items-center justify-end px-4 py-3 cursor-pointer hover:bg-gray-800 rounded-full transition-all duration-300"
@@ -103,7 +103,7 @@ export const ChatBotToggle = () => {
             <FontAwesomeIcon icon={faComment} className="text-white" />
           </div>
 
-          {/* Messages */}
+          
           <div className="flex-1 overflow-y-auto px-4 py-3 flex flex-col gap-2">
             {messages.map((msg) => (
               <div
@@ -119,7 +119,7 @@ export const ChatBotToggle = () => {
             <div ref={chatEndRef}></div>
           </div>
 
-          {/* Input area */}
+          
           <div className="flex px-4 py-3 border-t border-gray-800 gap-2">
             <textarea
               ref={textareaRef}

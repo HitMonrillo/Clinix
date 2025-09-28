@@ -64,8 +64,7 @@ export const ChatBot = () => {
   return (
     <div className="fixed inset-x-0 bottom-0 z-20 flex w-screen font-inter mt-30">
       <div className="flex flex-col w-full transition-all duration-150">
-        
-        {/* Messages area */}
+      
         <div className="flex-1 overflow-y-auto px-6 py-4 flex flex-col gap-3">
           {messages.map(msg => (
             <div
@@ -82,7 +81,7 @@ export const ChatBot = () => {
           <div ref={chatEndRef}></div>
         </div>
 
-        {/* Input area */}
+        
         <div className="flex justify-center px-6 py-4">
           <div className="flex items-center gap-3 w-full max-w-xl mb-25">
             <textarea

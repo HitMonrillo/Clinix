@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext, useRef } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faCommentDots, faUserCheck, faCircleDot } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCircleDot, faCommentDots, faUserCheck } from '@fortawesome/free-solid-svg-icons';
 import { MobileNav } from './MobileNav';
 import { ScreenContext } from '../Layouts/RootLayout';
 
@@ -16,16 +16,16 @@ const NavBar = () => {
   const location = useLocation();
   const navRefs = useRef([]);
 
-  // Add faCircleDot as first item
+  
   const allItems = [
-    { icon: faCircleDot, label: '', path: '/dot' },
-    { label: 'Clinix', path: '/' },
-    ...navItems
+    { icon: faCommentDots, label: 'Chat', path: '/chat' },
+    { label: 'Clinix', path: '/' }, 
+    { icon: faUserCheck, label: 'Check-In', path: '/checkin' },
   ];
 
   const getInitialIndex = () => {
     const index = allItems.findIndex(item => item.path === location.pathname);
-    return index >= 0 ? index : 0;
+    return index >= 0 ? index : 1; 
   };
 
   const [activeIndex, setActiveIndex] = useState(getInitialIndex);
@@ -34,10 +34,7 @@ const NavBar = () => {
   useEffect(() => {
     const el = navRefs.current[activeIndex];
     if (el) {
-      setBgStyle({
-        left: el.offsetLeft,
-        width: el.offsetWidth,
-      });
+      setBgStyle({ left: el.offsetLeft, width: el.offsetWidth });
     }
   }, [activeIndex, isMobileOpen]);
 
@@ -50,10 +47,7 @@ const NavBar = () => {
     const handleResize = () => {
       const el = navRefs.current[activeIndex];
       if (el) {
-        setBgStyle({
-          left: el.offsetLeft,
-          width: el.offsetWidth,
-        });
+        setBgStyle({ left: el.offsetLeft, width: el.offsetWidth });
       }
     };
     window.addEventListener('resize', handleResize);
@@ -67,33 +61,38 @@ const NavBar = () => {
           onClick={() => setIsMobileOpen(prev => !prev)}
           className={`flex items-center justify-between gap-6 bg-gray-900 ${isMobile ? 'hover:bg-zinc-600' : ''} cursor-pointer backdrop-blur-md rounded-full shadow-md px-4 py-1.5 w-auto max-w-lg pointer-events-auto relative`}
         >
-          <div className="hidden lg:flex relative flex-row gap-6">
+          <div className="hidden lg:flex relative flex-row gap-6 justify-between w-full">
+            
             <span
               className="absolute top-0 bottom-0 bg-white/90 rounded-full transition-all duration-500 ease-in-out"
               style={{ left: bgStyle.left, width: bgStyle.width }}
             />
+                {allItems.map((item, index) => {
+                  const Component = item.path === '/' ? Link : NavLink;
 
+                  const isCenter = item.path === '/';
+                  const isHome = location.pathname === '/';
+                  const labelOrIcon = isCenter && !isHome
+                    ? <FontAwesomeIcon icon={faCircleDot} className="w-4 h-4" />
+                    : item.label;
 
-            {allItems.map((item, index) => {
-              const isLogo = index === 1; // Clinix is now second item
-              const Component = isLogo ? Link : NavLink;
-              const to = item.path;
-
-              return (
-                <Component
-                  key={to}
-                  to={to}
-                  ref={el => (navRefs.current[index] = el)}
-                 className={`relative z-10 flex items-center gap-2 rounded-full px-3 py-1 transition-all duration-300 ${
-                  activeIndex === index ? 'text-black bg-white' : 'text-white hover:scale-110'
-                }`}
-                  onClick={() => setActiveIndex(index)}
-                >
-                  {item.icon && <FontAwesomeIcon icon={item.icon} className="w-4 h-4" />}
-                  {item.label && <span className="font-poppins">{item.label}</span>}
-                </Component>
-              );
-            })}
+                  return (
+                    <Component
+                      key={item.path}
+                      to={item.path}
+                      ref={el => (navRefs.current[index] = el)}
+                      className={`relative z-10 flex items-center gap-2 rounded-full px-3 py-1 transition-all duration-300 ${
+                        activeIndex === index ? 'text-black bg-white' : 'text-white hover:scale-110'
+                      }`}
+                      onClick={() => setActiveIndex(index)}
+                    >
+                      {item.icon && index !== 1 && <FontAwesomeIcon icon={item.icon} className="w-4 h-4" />}
+                      <span className={`font-poppins ${isCenter && isHome ? 'font-semibold' : ''}`}>
+                        {labelOrIcon}
+                      </span>
+                    </Component>
+                  );
+                })}
           </div>
 
           <div className="lg:hidden flex items-center">
