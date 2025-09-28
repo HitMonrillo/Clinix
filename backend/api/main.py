@@ -124,7 +124,7 @@ def create_appointment_agents(api_key: str):
     return planner, executor
 
 
-GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-pro")
+GENAI_MODEL = os.getenv("KNOWLEDGE_MODEL", "gemini-flash-latest")
 
 
 def create_knowledge_agent(api_key: str) -> KnowledgeAgent:
