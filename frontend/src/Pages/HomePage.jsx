@@ -3,7 +3,7 @@ import HeroSection from '../components/HeroSection'
 
 const Homepage = () => {
   return (
-    <div className='bg-gray-100/50 z- h-screen border'>
+    <div className='bg-gray-100/50 '>
       <HeroSection/>
     </div>
   )

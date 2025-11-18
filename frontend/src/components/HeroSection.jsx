@@ -23,11 +23,7 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
     setTimeout(() => navigate('/SignIn'), 600);
   };
 
-  useEffect(() => {
-    const handleScroll = () => showArrow && triggerExit();
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, [showArrow]);
+
 
 
   const generateRandomStyle = () => {
@@ -52,7 +48,8 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
   }, []);
 
   return (
-    <>
+    <div className="flex items-center justify-center min-h-screen relative overflow-hidden overscroll-none border">
+
     
       <div className="absolute w-full h-auto pointer-events-none z-10">
         {blobs.map(blob => (
@@ -64,15 +61,15 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
         ))}
       </div>
 
-      <section className="min-h-[90vh] xl:h-vh flex flex-col items-center justify-center text-center px-5 gap-5 w-auto h-auto z-20 relative">
+      <section className=" xl:h-vh flex flex-col items-center justify-center text-center px-5 gap-5 w-auto h-auto z-20 relative">
         <div className='flex flex-col items-center justify-center  gap-5'>
           <div className='flex flex-col  items-center justify-center '>
-            <h1 className="text-xl  md:text-6xl sm:text-5xl flex flex-col font-poppins font-medium mb-2 tracking-[0.02em] ">
+            <h1 className="text-xl  md:text-6xl sm:text-5xl flex flex-col font-poppins font-semibold mb-2 leading-[1.3] tracking-[-0.02em] ">
               <span>Clinix: Seamless Care </span>
               <span>Starts Here.</span>
             </h1>
             <p className="text-xs  sm:text-sm md:text-md mt-5 font-poppins font-medium text-gray-800 max-w-md w-full sm:w-md lg:w-md mb-6 leading-loose">
-                Appointments made <b>fast</b>. Records made <b>simple</b>. Care made <b>awesome</b>.
+                Appointments made <b>fast</b>. Records made <b>simple</b>. 
               </p>
           </div>
           
@@ -101,7 +98,7 @@ import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
           </div>
         )}
       </section>
-    </>
+    </div>
   );
 };
 

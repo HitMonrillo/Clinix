@@ -86,7 +86,7 @@ export const ChatBotToggle = () => {
       {!isExpanded && (
         <button
           onClick={() => setIsExpanded(true)}
-          className="w-full cursor-pointer h-full flex items-center justify-center text-white rounded-full bg-gray-900 shadow-md hover:bg-gray-800 active:bg-gray-900 transition-all duration-150"
+          className="w-full cursor-pointer h-full flex items-center justify-center text-white rounded-full bg-[#100C08] shadow-md hover:bg-gray-800 active:bg-[#100C08] transition-all duration-150"
         >
           <FontAwesomeIcon icon={faComment} size="lg" />
         </button>
@@ -132,7 +132,7 @@ export const ChatBotToggle = () => {
             />
             <button
               onClick={handleSend}
-              className="px-3 py-2 bg-sky-700 hover:bg-sky-800 text-white rounded-full transition-all duration-150"
+              className="px-3 py-1 bg-sky-700 text-sm cursor-pointer hover:bg-sky-800 text-white rounded-full transition-all duration-150"
             >
               <FontAwesomeIcon icon={faPaperPlane} />
             </button>
