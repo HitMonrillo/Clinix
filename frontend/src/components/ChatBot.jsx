@@ -1,27 +1,26 @@
 import React, { useState, useRef, useEffect, useContext } from 'react';
-import { ScreenContext } from '../Layouts/RootLayout';
+import { ThemeContext } from '../Layouts/RootLayout';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowUp, faPaperPlane } from '@fortawesome/free-solid-svg-icons';
+import { faArrowUp } from '@fortawesome/free-solid-svg-icons';
 import { sendChat } from '../services/api';
 
-/**
- * A minimalist, full-screen dark-themed chat bot component with rounded chat bubbles.
- */
 export const ChatBot = () => {
-  const { isMobile } = useContext(ScreenContext);
+  const { isDark } = useContext(ThemeContext);
+
   const [messages, setMessages] = useState([
     { id: 1, from: 'ai', text: 'Hello! How can I assist you today?' },
   ]);
   const [input, setInput] = useState('');
+
   const chatEndRef = useRef(null);
   const textareaRef = useRef(null);
 
-  // Auto-scroll to the latest message
+  // Scroll to bottom on new message
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
-  // Auto-resize the textarea based on content
+  // Auto-resize textarea
   useEffect(() => {
     if (textareaRef.current) {
       textareaRef.current.style.height = 'auto';
@@ -29,7 +28,6 @@ export const ChatBot = () => {
     }
   }, [input]);
 
-  // Handler for sending a message
   const handleSend = async () => {
     if (!input.trim()) return;
 
@@ -42,6 +40,7 @@ export const ChatBot = () => {
 
     try {
       const res = await sendChat(userMessage);
+
       const reply =
         (typeof res === 'string' && res) ||
         res?.message ||
@@ -63,7 +62,6 @@ export const ChatBot = () => {
     }
   };
 
-  // Handler for Enter key press
   const handleKeyPress = e => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
@@ -72,36 +70,59 @@ export const ChatBot = () => {
   };
 
   return (
-    <div className="flex flex-col w-full h-full bg-gray-950 text-gray-100 font-sans antialiased">
+    <div
+      className={`flex flex-col w-full h-full font-sans antialiased
+        ${isDark ? 'bg-gray-950 text-gray-100' : 'bg-gray-100 text-gray-900'}
+      `}
+    >
 
-      {/* Main Chat Area - Flexible height to fill screen */}
+      {/* Chat Window */}
       <div className="flex-1 overflow-y-auto pt-25 pb-32 px-4 md:px-8 max-w-3xl mx-auto w-full">
         <div className="flex flex-col gap-3">
           {messages.map(msg => (
             <div
               key={msg.id}
               className={`
-                px-4 py-2 rounded-3xl max-w-[85%] break-words whitespace-pre-wrap 
-                text-base leading-relaxed shadow-lg
+                px-4 py-2 rounded-3xl max-w-[85%] break-words whitespace-pre-wrap text-base 
+                leading-relaxed shadow-lg
                 ${
                   msg.from === 'ai'
-                    ? 'bg-gray-800 text-gray-200 self-start ' // AI Bubble
-                    : 'bg-blue-800 text-white self-end ' // User Bubble
+                    ? isDark
+                      ? 'bg-gray-800 text-gray-200 self-start'
+                      : 'bg-white text-gray-800 self-start border border-gray-300'
+                    : 'bg-blue-700 text-white self-end'
                 }
               `}
             >
               {msg.text}
             </div>
           ))}
-          {/* Scroll anchor */}
+
+          {/* Anchor */}
           <div ref={chatEndRef}></div>
         </div>
       </div>
 
-      {/* Input Bar - Fixed at bottom, Centered, Rounded-3xl */}
-      <div className="fixed inset-x-0 bottom-0 z-20 flex justify-center p-4 md:p-6 bg-gradient-to-t from-gray-950/95 via-gray-950/90 to-transparent">
-        <div className="flex items-end gap-2 w-full max-w-3xl border border-gray-700/60 rounded-3xl bg-gray-900/90 backdrop-blur-sm shadow-2xl">
-          
+      {/* Input Bar */}
+      <div
+        className={`
+          fixed inset-x-0 bottom-0 z-20 flex justify-center p-4 md:p-6
+          bg-gradient-to-t 
+          ${isDark 
+            ? 'from-gray-950/95 via-gray-950/90 to-transparent'
+            : 'from-gray-200/95 via-gray-200/90 to-transparent'
+          }
+        `}
+      >
+        <div
+          className={`
+            flex items-end gap-2 w-full max-w-3xl rounded-3xl backdrop-blur-sm shadow-2xl border
+            ${isDark 
+              ? 'bg-gray-900/90 border-gray-700/60'
+              : 'bg-white/90 border-gray-300'
+            }
+          `}
+        >
           <textarea
             ref={textareaRef}
             value={input}
@@ -109,12 +130,14 @@ export const ChatBot = () => {
             onKeyDown={handleKeyPress}
             placeholder="Send a message..."
             rows={1}
-            className="
-              flex-1 font-sans max-h-40 resize-none bg-transparent text-gray-100 
-              rounded-3xl px-4 py-3 outline-none focus:ring-0 text-base placeholder-gray-500
-            "
+            className={`
+              flex-1 font-sans max-h-40 resize-none rounded-3xl px-4 py-3 
+              outline-none text-base 
+              ${isDark ? 'bg-transparent text-gray-100 placeholder-gray-500' : 'bg-transparent text-gray-900 placeholder-gray-500'}
+            `}
             style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
           />
+
           <button
             onClick={handleSend}
             disabled={!input.trim()}
@@ -123,13 +146,14 @@ export const ChatBot = () => {
               ${
                 input.trim()
                   ? 'bg-blue-600 hover:bg-blue-500 text-white cursor-pointer'
-                  : 'bg-transparent text-gray-600 cursor-not-allowed'
+                  : isDark
+                    ? 'bg-transparent text-gray-600 cursor-not-allowed'
+                    : 'bg-transparent text-gray-400 cursor-not-allowed'
               }
             `}
           >
             <FontAwesomeIcon icon={faArrowUp} className="w-5 h-5" />
           </button>
-          
         </div>
       </div>
     </div>

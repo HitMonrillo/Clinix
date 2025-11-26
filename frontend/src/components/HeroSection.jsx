@@ -1,104 +1,136 @@
-import React, { useEffect, useState } from 'react'; 
-import { Link, useNavigate } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowDown } from '@fortawesome/free-solid-svg-icons';
+import React from 'react';
+import { ShieldCheck, ArrowRight, Calendar, Video, ArrowDown, Star, User } from 'lucide-react';
+import { Button } from './ui/Button';
 
-  const HeroSection = () => {
-  const [showArrow, setShowArrow] = useState(false);
-  const [blobs, setBlobs] = useState([
-    { id: 1, color: "from-blue-600 to-blue-500/80" },
-    { id: 2, color: "from-red-700 to-red-600/90" },
-    { id: 3, color: "from-green-600 to-green-500/80" },
-    { id: 4, color: "from-purple-600 to-purple-500/80" },
-    { id: 5, color: "from-pink-600 to-pink-500/80" },
-  ]);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    const timer = setTimeout(() => setShowArrow(true), 5000);
-    return () => clearTimeout(timer);
-  }, []);
-
-  const triggerExit = () => {
-    setTimeout(() => navigate('/SignIn'), 600);
-  };
-
-
-
-
-  const generateRandomStyle = () => {
-    const baseWidth = 80 + Math.random() * 190; 
-    const baseHeight = 80 + Math.random() * 150;
-    return {
-      top: `${Math.random() * 80}vh`,
-      left: `${Math.random() * 90}vw`,
-      width: `${baseWidth}px`,
-      height: `${baseHeight}px`,
-      opacity: 1.0, 
-    };
-  };
-
-
-  useEffect(() => {
-    setBlobs(prev => prev.map(blob => ({ ...blob, style: generateRandomStyle() })));
-    const interval = setInterval(() => {
-      setBlobs(prev => prev.map(blob => ({ ...blob, style: generateRandomStyle() })));
-    }, 4000);
-    return () => clearInterval(interval);
-  }, []);
+const HeroSection = () => {
 
   return (
-    <div className="flex items-center justify-center min-h-screen relative overflow-hidden overscroll-none border">
-
-    
-      <div className="absolute w-full h-auto pointer-events-none z-10">
-        {blobs.map(blob => (
-          <div
-            key={blob.id}
-            className={`rounded-full blur-3xl fixed transition-all duration-3000 ease-in-out bg-gradient-to-r ${blob.color}`}
-            style={blob.style}
-          ></div>
-        ))}
-      </div>
-
-      <section className=" xl:h-vh flex flex-col items-center justify-center text-center px-5 gap-5 w-auto h-auto z-20 relative">
-        <div className='flex flex-col items-center justify-center  gap-5'>
-          <div className='flex flex-col  items-center justify-center '>
-            <h1 className="text-xl  md:text-6xl sm:text-5xl flex flex-col font-poppins font-semibold mb-2 leading-[1.3] tracking-[-0.02em] ">
-              <span>Clinix: Seamless Care </span>
-              <span>Starts Here.</span>
-            </h1>
-            <p className="text-xs  sm:text-sm md:text-md mt-5 font-poppins font-medium text-gray-800 max-w-md w-full sm:w-md lg:w-md mb-6 leading-loose">
-                Appointments made <b>fast</b>. Records made <b>simple</b>. 
-              </p>
-          </div>
+    <section className="relative min-h-[100vh] flex items-center pt-28 pb-12 lg:pt-0 lg:pb-0" aria-label="Hero">
+      <div className="max-w-screen-2xl mx-auto w-full px-6 lg:px-8 grid lg:grid-cols-12 gap-12 items-center h-full relative z-10">
+        
+        {/* Left Column: Content */}
+        <div className="lg:col-span-6 flex flex-col items-start gap-6 lg:gap-8 animate-fade-up">
           
-        
-        <div className="flex flex-row gap-5 font-inter">
-          <Link
-            to="/checkin"
-            className="flex items-center px-6 py-2 bg-black text-white rounded-full hover:bg-zinc-700 transition-colors whitespace-nowrap"
-          >
-            Get Started
-          </Link>
-          <Link
-            to="/chat"
-            className="flex items-center px-6 py-2 bg-transparent text-black rounded-full border-2 border-black hover:bg-zinc-300/50 transition-colors whitespace-nowrap"
-          >
-            Chat with Us
-          </Link>
-        </div>
-        </div>
-        
-        {showArrow && (
-          <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-5 cursor-pointer">
-            <button onClick={() => navigate('/checkin')} className="cursor-pointer">
-              <FontAwesomeIcon icon={faArrowDown} className="animate-bounce hover:scale-120 transition-all" />
-            </button>
+          {/* Eyebrow */}
+          <div className="inline-flex items-center gap-2 bg-blue-50/80 dark:bg-blue-900/30 backdrop-blur-sm text-clinix-blue dark:text-blue-300 px-4 py-1.5 rounded-full text-sm font-semibold tracking-wide border border-blue-100 dark:border-blue-800">
+            <span className="w-2 h-2 rounded-full bg-clinix-teal animate-pulse"></span>
+            Now accepting new patients
           </div>
-        )}
-      </section>
-    </div>
+
+          {/* Headline */}
+          <div className="relative">
+             <h1 className="text-4xl md:text-5xl lg:text-6xl/tight font-bold text-clinix-dark dark:text-white tracking-tight font-poppins">
+              Modern primary care <br/> that fits your <span className="text-clinix-blue dark:text-blue-400 relative inline-block">
+                life
+                {/* Underline decoration */}
+                <svg className="absolute w-full h-3 -bottom-1 left-0 text-clinix-teal/40 dark:text-teal-500/40" viewBox="0 0 100 10" preserveAspectRatio="none">
+                  <path d="M0 5 Q 50 10 100 5" stroke="currentColor" strokeWidth="3" fill="none" />
+                </svg>
+              </span>
+            </h1>
+          </div>
+
+          {/* Subheadline */}
+          <p className="text-lg md:text-lg text-clinix-muted dark:text-gray-300 leading-relaxed max-w-xl font-medium">
+            In-clinic and virtual visits, quick scheduling, and continuous care — all on one platform. Trusted doctors. Transparent pricing.
+          </p>
+
+          {/* CTA Group */}
+          <div className="w-full sm:w-auto flex flex-col sm:flex-row gap-4 mt-2">
+            <Button size="lg" className="!py-3 text-clinix-blue dark:text-white cursor-pointer dark:shadow-blue-900/30" icon={<ArrowRight size={18} />}>
+              Book an appointment
+            </Button>
+            <Button variant="ghost" size="lg" className="border cursor-pointer border-gray-200 dark:border-gray-700 bg-white/50 dark:bg-gray-800/50 hover:bg-white dark:hover:bg-gray-800 !py-3 backdrop-blur-sm">
+              See insurance & pricing
+            </Button>
+          </div>
+
+          {/* Microcopy & Trust */}
+          <div className="flex flex-col gap-4 mt-2">
+            <p className="text-sm text-clinix-muted dark:text-gray-400 font-medium">
+              Appointments available today • Telehealth visits start at $35
+            </p>
+            
+            <div className="flex flex-wrap items-center gap-6 pt-5 border-t border-gray-200/60 dark:border-gray-700/60 w-full">
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="text-clinix-teal dark:text-teal-400" size={20} />
+                <span className="text-sm font-medium text-clinix-dark dark:text-gray-200">Board-certified physicians</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <ShieldCheck className="text-clinix-teal dark:text-teal-400" size={20} />
+                <span className="text-sm font-medium text-clinix-dark dark:text-gray-200">HIPAA-secure</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-white/40 dark:bg-black/20 px-2 py-1 rounded-lg backdrop-blur-sm">
+                 <div className="flex text-yellow-400">
+                   <Star size={16} fill="currentColor" />
+                 </div>
+                 <span className="text-sm font-bold text-clinix-dark dark:text-white ml-1">4.8</span>
+                 <span className="text-sm text-clinix-muted dark:text-gray-400">(3.2k+)</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Right Column: Visual */}
+        <div className="lg:col-span-6 relative h-full min-h-[400px] lg:min-h-[85vh] flex items-center justify-end">
+           {/* Main Image Container (Solid Color + Mockup User Icon) */}
+           <div className="relative w-full h-[500px] lg:h-[80%] rounded-[2rem] overflow-hidden shadow-2xl dark:shadow-blue-900/20 clip-hero-image transition-all bg-gradient-to-br from-clinix-blue to-blue-600 dark:from-blue-900 dark:to-blue-950 flex items-center justify-center">
+             
+             {/* Simple subtle pattern overlay for texture */}
+             <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-white via-transparent to-transparent"></div>
+             
+             {/* Mockup User Icon (Stylized Background Element) */}
+             <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 dark:opacity-10 scale-125 translate-y-12">
+                <User size={400} className="text-white" strokeWidth={1} />
+             </div>
+             
+             {/* Floating Booking Mockup (Untouched) */}
+             <div className="absolute bottom-6 left-6 right-6 lg:left-auto lg:-translate-x-12 lg:bottom-6 bg-white/90 dark:bg-gray-900/90 backdrop-blur-xl p-5 rounded-3xl shadow-lift border border-white/50 dark:border-gray-700 animate-fade-up max-w-sm max-h-fit z-20" style={{animationDelay: '0.2s'}}>
+               <div className="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-gray-800 pb-3">
+                 <div>
+                   <h3 className="text-sm font-bold text-clinix-dark dark:text-white font-poppins">Dr. Sarah Lee</h3>
+                   <p className="text-xs text-clinix-muted dark:text-gray-400">Primary Care • 4.9 <Star size={10} className="inline text-yellow-400 fill-current"/></p>
+                 </div>
+                 {/* Initials Placeholder Avatar */}
+                 <div className="w-10 h-10 rounded-full bg-clinix-blue text-white flex items-center justify-center font-bold text-sm ring-2 ring-white dark:ring-gray-700 shadow-sm">
+                   SL
+                 </div>
+               </div>
+               
+               <div className="space-y-3">
+                 <div className="flex gap-2">
+                    <div className="flex-1 p-2 bg-blue-50 dark:bg-blue-900/30 border border-blue-100 dark:border-blue-800/50 rounded-xl text-center cursor-pointer">
+                      <Calendar size={16} className="mx-auto text-clinix-blue dark:text-blue-400 mb-1" />
+                      <span className="block text-[10px] uppercase tracking-wide font-bold text-clinix-blue dark:text-blue-300">In-Clinic</span>
+                    </div>
+                    <div className="flex-1 p-2 bg-white dark:bg-gray-800 border border-gray-100 dark:border-gray-700 rounded-xl text-center cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
+                      <Video size={16} className="mx-auto text-gray-400 mb-1" />
+                      <span className="block text-[10px] uppercase tracking-wide font-bold text-gray-500 dark:text-gray-400">Virtual</span>
+                    </div>
+                 </div>
+                 
+                 <div className="bg-gray-50 dark:bg-gray-800/50 rounded-xl p-3 border border-gray-100 dark:border-gray-700/50">
+                   <p className="text-xs font-semibold text-gray-500 dark:text-gray-400 mb-2">Today's Availability</p>
+                   <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-hide">
+                     <span className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">2:30 PM</span>
+                     <span className="px-3 py-1.5 bg-clinix-blue text-white rounded-lg text-xs font-semibold whitespace-nowrap shadow-md shadow-blue-500/20">3:15 PM</span>
+                     <span className="px-3 py-1.5 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg text-xs font-semibold text-gray-600 dark:text-gray-300 whitespace-nowrap">4:00 PM</span>
+                   </div>
+                 </div>
+
+                 <Button size="sm" fullWidth className="!py-2.5 text-sm !rounded-xl mt-1 bg-blue-500 text-white hover:bg-blue-800">Confirm Booking</Button>
+               </div>
+             </div>
+           </div>
+        </div>
+
+      </div>
+      
+      {/* Scroll Indicator */}
+      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 hidden lg:block animate-bounce-slow text-clinix-muted/50 dark:text-white/30">
+        <ArrowDown size={24} />
+      </div>
+    </section>
   );
 };
 

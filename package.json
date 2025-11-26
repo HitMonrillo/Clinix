@@ -3600,5 +3600,8 @@
         "url": "https://github.com/sponsors/sindresorhus"
       }
     }
+  },
+  "dependencies": {
+    "lucide-react": "^0.555.0"
   }
 }
